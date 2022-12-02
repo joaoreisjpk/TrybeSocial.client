@@ -14,9 +14,13 @@ type FormInputProps = {
   name: string,
 };
 
+const defaultStateCondition = {
+  valid: true, invalid: false, msg: '',
+};
+
 export default function FormInput(
   {
-    stateCondition, value, setValue, validation, name,
+    stateCondition = defaultStateCondition, value, setValue, validation, name,
   }: FormInputProps,
 ) {
   return (<>
