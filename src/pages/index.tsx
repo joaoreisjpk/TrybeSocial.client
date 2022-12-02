@@ -4,12 +4,12 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 
 const Home: NextPage = () => {
-  const { push } = useRouter()
+  const { push } = useRouter();
 
   useEffect(() => {
     push('/login');
-  }, [push])
-  
+  }, [push]);
+
   return (
     <div>
       <Head>

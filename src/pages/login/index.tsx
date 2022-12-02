@@ -12,7 +12,12 @@ import * as Validation from '../../helpers/validation';
 import { useAuth } from '../../hooks/useAuth';
 import { fetchLogin, fetchRefreshToken } from '../../helpers/fetchers';
 import JWT, { decrypt, encrypt } from '../../helpers/Encrypt';
-import { setCookieAt, setCookieRt, destroyCookie, parseCookies } from '../../helpers/cookie';
+import {
+  setCookieAt,
+  setCookieRt,
+  destroyCookie,
+  parseCookies,
+} from '../../helpers/cookie';
 
 const INITIAL_CONDITION = {
   valid: false,
@@ -42,6 +47,7 @@ export default function Login() {
     }
 
     setEmailCondition({ valid: true, invalid: false, msg: '' });
+    return null;
   };
 
   const passwordValidation = (passwordValue: string) => {
@@ -55,17 +61,15 @@ export default function Login() {
     }
 
     setPasswordCondition({ valid: true, invalid: false, msg: '' });
+    return null;
   };
 
-  const handleButtonDisable = () => {
-    return (
-      !!Validation.emailVerifier(user) ||
-      !!Validation.passwordVerifier(password)
-    );
-  };
+  const handleButtonDisable = () => (
+    !!Validation.emailVerifier(user) || !!Validation.passwordVerifier(password)
+  );
 
   const handleClick = async (
-    e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>
+    e: MouseEvent<HTMLButtonElement>,
   ) => {
     e.preventDefault();
 
@@ -74,19 +78,19 @@ export default function Login() {
       password: encrypt(password),
     });
 
-    const { acess_token, refresh_token, error } = await fetchLogin(body);
+    const { acessToken, refreshToken, error } = await fetchLogin(body);
 
-    if (acess_token && refresh_token) {
-      setCookieAt('tokenAt', acess_token);
-      setCookieRt('tokenRt', refresh_token);
-      const { email } = jwt.decode(acess_token) as { email: string };
+    if (acessToken && refreshToken) {
+      setCookieAt('tokenAt', acessToken);
+      setCookieRt('tokenRt', refreshToken);
+      const { email } = jwt.decode(acessToken) as { email: string };
       setEmail(email);
-      return push('/main-page');
-    } else {
-      setUnauthotorized(error || 'Algum erro ocorreu');
-      setEmailCondition(INITIAL_CONDITION);
-      setPasswordCondition(INITIAL_CONDITION);
+      push('/main-page');
+      return;
     }
+    setUnauthotorized(error || 'Algum erro ocorreu');
+    setEmailCondition(INITIAL_CONDITION);
+    setPasswordCondition(INITIAL_CONDITION);
   };
 
   return (
@@ -150,20 +154,20 @@ export default function Login() {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { 'tokenRt': encryptRt } = parseCookies(ctx);
-  let tokenRt = decrypt(encryptRt);
+  const { tokenRt: encryptRt } = parseCookies(ctx);
+  const tokenRt = decrypt(encryptRt);
 
   if (tokenRt) {
     const { userId } = jwt.verify(tokenRt);
-    const { acess_token, refresh_token } = await fetchRefreshToken(
+    const { acessToken, refreshToken } = await fetchRefreshToken(
       tokenRt,
-      userId
+      userId,
     );
 
-    if (acess_token && refresh_token) {
-      setCookieAt('tokenAt', acess_token, ctx);
+    if (acessToken && refreshToken) {
+      setCookieAt('tokenAt', acessToken, ctx);
 
-      setCookieRt('tokenRt', refresh_token, ctx);
+      setCookieRt('tokenRt', refreshToken, ctx);
       return {
         props: {},
         redirect: {
@@ -171,9 +175,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
           permanent: false,
         },
       };
-    } else {
-      destroyCookie('tokenRt', ctx);
     }
+    destroyCookie('tokenRt', ctx);
   }
 
   return {

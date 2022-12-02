@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { MouseEvent, useState } from 'react';
 import Row from 'react-bootstrap/Row';
 import Form from 'react-bootstrap/Form';
-import Container from 'react-bootstrap/Container';;
+import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 
@@ -19,7 +19,7 @@ export default function Login() {
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const handleClick = async (
-    e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>
+    e: MouseEvent<HTMLButtonElement>,
   ) => {
     e.preventDefault();
 
@@ -37,10 +37,13 @@ export default function Login() {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: body,
-    }).then((data) => data.json())) as { acess_token: string } | any;
+      body,
+    }).then((data) => data.json())) as { acessToken: string } | any;
 
-    if (response.acess_token) return push('/login');
+    if (response.acessToken) {
+      push('/login');
+      return;
+    }
     alert('usuário já existe');
   };
 

@@ -1,3 +1,11 @@
 {
-  "extends": "next"
+  "extends": ["next", "airbnb-base", "eslint:recommended"],
+  "rules": {
+    "import/extensions": ["error", "never", {
+      "js": "never",
+      "tsx": "never",
+      "ts": "never",
+      "jsx": "never"
+    }]
+  }
 }

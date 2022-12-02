@@ -1,9 +1,11 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import { Button, Container, Nav, Navbar } from 'react-bootstrap';
-import Link from './Link';
+import {
+  Button, Container, Nav, Navbar,
+} from 'react-bootstrap';
 import NextLink from 'next/link';
-import { useAuth } from '../hooks/useAuth';
 import { useRouter } from 'next/router';
+import Link from './Link';
+import { useAuth } from '../hooks/useAuth';
 
 export default function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
