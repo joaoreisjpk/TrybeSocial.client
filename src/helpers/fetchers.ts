@@ -1,4 +1,4 @@
-const URL = process.env.URL || 'http://44.200.247.39:3333';
+const URL = process.env.URL || 'http://localhost:3333';
 
 interface IuserTokenResponse {
   acessToken?: string;
@@ -24,13 +24,19 @@ export async function fetchLogin(body: string) {
 }
 
 export async function fetchRefreshToken(token: string, id: number) {
-  return (await fetch(`${URL}/auth/refresh/${id}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      token,
-    },
-  }).then((data) => data.json())) as IuserTokenResponse;
+  try {
+    const tokenResponse = await fetch(`${URL}/auth/refresh/${id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        token,
+      },
+    });
+    return tokenResponse.json() as IuserTokenResponse;
+  } catch (err) {
+    console.log(err);
+    return {};
+  }
 }
 
 export async function fetchLogout(email: string) {
