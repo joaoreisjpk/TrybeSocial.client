@@ -14,9 +14,7 @@ export default function Header() {
 
   useEffect(() => {
     const loginPaths = ['/cadastro', '/login'];
-    return () => {
-      setIsLoggedIn(loginPaths.includes(pathname));
-    };
+    setIsLoggedIn(!loginPaths.includes(pathname));
   }, [pathname]);
 
   const handleClick = async () => {
@@ -34,13 +32,13 @@ export default function Header() {
           <Nav className='me-auto'>
             {isLoggedIn ? (
               <Fragment>
-                <Link href='/login'>Login</Link>
-                <Link href='/cadastro'>Cadastrar</Link>
+                <Link href='/main-page'>Home</Link>
+                <Button onClick={handleClick}>Logout</Button>
               </Fragment>
             ) : (
               <Fragment>
-                <Link href='/main-page'>Home</Link>
-                <Button onClick={handleClick}>Logout</Button>
+                <Link href='/login'>Login</Link>
+                <Link href='/cadastro'>Cadastrar</Link>
               </Fragment>
             )}
           </Nav>
