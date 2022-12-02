@@ -41,14 +41,14 @@ export function ResultsProvider({ children }: IProvider) {
   const RefreshTokenFunction = useCallback(async () => {
     const token = getCookie('tokenRt');
     const { userId } = jwt.decode(token);
-    const { acess_token, refresh_token } = await fetchRefreshToken(
+    const { acessToken, refreshToken } = await fetchRefreshToken(
       token,
-      userId
+      userId,
     );
 
-    if (refresh_token && acess_token) {
-      setCookieAt('tokenAt', acess_token);
-      setCookieRt('tokenRt', refresh_token);
+    if (refreshToken && acessToken) {
+      setCookieAt('tokenAt', acessToken);
+      setCookieRt('tokenRt', refreshToken);
     } else {
       destroyCookie('tokenRt');
       destroyCookie('tokenAt');

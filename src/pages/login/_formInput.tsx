@@ -9,12 +9,15 @@ type FormInputProps = {
   stateCondition: StateCondition,
   value: string,
   setValue: Dispatch<SetStateAction<string>>,
-  validation(value: string): void,
+  // eslint-disable-next-line no-unused-vars
+  validation: (value: string) => void,
   name: string,
 };
 
 export default function FormInput(
-  { stateCondition, value, setValue, validation, name }: FormInputProps
+  {
+    stateCondition, value, setValue, validation, name,
+  }: FormInputProps,
 ) {
   return (<>
   <Form.Control

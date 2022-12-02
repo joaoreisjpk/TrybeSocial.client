@@ -1,11 +1,11 @@
 const URL = process.env.URL || 'http://44.200.247.39:3333';
 
 interface IuserTokenResponse {
-  acess_token?: string;
-  refresh_token?: string;
+  acessToken?: string;
+  refreshToken?: string;
   error?: string;
 }
-console.log(URL);
+
 export async function fetchLogin(body: string) {
   let response;
   try {
@@ -17,7 +17,6 @@ export async function fetchLogin(body: string) {
       body,
     }).then((data) => data.json())) as IuserTokenResponse;
   } catch (err) {
-    console.log(err);
     return {};
   }
 

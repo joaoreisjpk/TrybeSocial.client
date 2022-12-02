@@ -6,7 +6,9 @@ import Header from '../../components/Header';
 import { useAuth } from '../../hooks/useAuth';
 import { fetchRefreshToken } from '../../helpers/fetchers';
 import JWT, { decrypt } from '../../helpers/Encrypt';
-import { setCookieAt, setCookieRt, destroyCookie, parseCookies } from '../../helpers/cookie';
+import {
+  setCookieAt, setCookieRt, destroyCookie, parseCookies,
+} from '../../helpers/cookie';
 
 interface IServerSideProps {
   email: string;
@@ -36,9 +38,9 @@ export default function MainPage({ email: propEmail }: IServerSideProps) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { 'tokenAt': encryptAt, 'tokenRt': encryptRt } = parseCookies(ctx);
+  const { tokenAt: encryptAt, tokenRt: encryptRt } = parseCookies(ctx);
   let tokenAt = decrypt(encryptAt);
-  let tokenRt = decrypt(encryptRt);
+  const tokenRt = decrypt(encryptRt);
 
   if (!tokenRt) {
     destroyCookie('tokenAt', ctx);
@@ -55,17 +57,17 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   if (!tokenAt) {
     const { userId } = jwt.decode(tokenRt);
-    const { acess_token, refresh_token } = await fetchRefreshToken(
+    const { acessToken, refreshToken } = await fetchRefreshToken(
       tokenRt,
-      userId
+      userId,
     );
 
-    if (acess_token && refresh_token) {
-      tokenAt = acess_token;
+    if (acessToken && refreshToken) {
+      tokenAt = acessToken;
 
-      setCookieAt('tokenAt', acess_token, ctx);
+      setCookieAt('tokenAt', acessToken, ctx);
 
-      setCookieRt('tokenRt', refresh_token, ctx);
+      setCookieRt('tokenRt', refreshToken, ctx);
     } else {
       destroyCookie('tokenRt', ctx);
       return {
