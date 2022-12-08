@@ -8,6 +8,8 @@ interface IuserTokenResponse {
 
 export async function fetchLogin(body: string) {
   let response;
+  console.log(process.env);
+  console.log(process.env.URL);
   try {
     response = (await fetch(`${URL}/auth/signin`, {
       method: 'POST',
