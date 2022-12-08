@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   env: {
-    URL: 'http://3.221.216.107:3333',
+    URL: 'http://34.224.208.179:3333',
     JWT_SECRET: 'paçocapaçoquinha'
   }
 }
