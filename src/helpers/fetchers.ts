@@ -6,10 +6,14 @@ interface IuserTokenResponse {
   error?: string;
 }
 
+interface IUser {
+  email: string
+  firstName: string
+  lastName: string
+}
+
 export async function fetchLogin(body: string) {
   let response;
-  console.log(process.env);
-  console.log(process.env.URL);
   try {
     response = (await fetch(`${URL}/auth/signin`, {
       method: 'POST',
@@ -36,7 +40,6 @@ export async function fetchRefreshToken(token: string, id: number) {
     });
     return tokenResponse.json() as IuserTokenResponse;
   } catch (err) {
-    console.log(err);
     return {};
   }
 }
@@ -48,4 +51,13 @@ export async function fetchLogout(email: string) {
       'Content-Type': 'application/json',
     },
   });
+}
+
+export function getUser(email: string): Promise<IUser> {
+  return fetch(`${URL}/user/${email}/`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }).then((data) => data.json());
 }
