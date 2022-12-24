@@ -15,7 +15,7 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [turma, setTurma] = useState('');
+  const [trybe, setTrybe] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const handleClick = async (
@@ -30,6 +30,7 @@ export default function Login() {
       password,
       firstName,
       lastName,
+      trybe,
     });
 
     const response = (await fetch(`${URL}/auth/signup`, {
@@ -105,8 +106,8 @@ export default function Login() {
                 type='text'
                 name='user'
                 className=''
-                value={turma}
-                onChange={({ target }) => setTurma(target.value)}
+                value={trybe}
+                onChange={({ target }) => setTrybe(target.value)}
                 id='user'
               />
               <Form.Control.Feedback type='invalid'>
