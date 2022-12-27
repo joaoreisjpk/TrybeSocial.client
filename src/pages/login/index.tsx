@@ -116,9 +116,7 @@ export default function Login() {
           </Form.Group>
           <Form.Group className='mb-3'>
             <Form.Label>Password</Form.Label>
-            <FormInput
-              stateCondition={passwordCondition}
-              value={password}
+            <FormInput stateCondition={passwordCondition} value={password}
               setValue={setPassword}
               validation={passwordValidation}
               name='password'

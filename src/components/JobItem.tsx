@@ -8,7 +8,7 @@ export default function JobItem({ data }: {data:IJob}) {
   return (
     <Fragment>
       <div>{data.name}</div>
-      <Link passHref href={data.external_link}><a target="_blank">Link</a></Link>
+      <Link passHref href={data.external_link}><a href="#" target="_blank">Link</a></Link>
     </Fragment>
   );
 }
