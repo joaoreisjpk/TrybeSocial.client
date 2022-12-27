@@ -34,7 +34,7 @@ export const AuthContext = createContext({} as IContext);
 
 export function ResultsProvider({ children }: IProvider) {
   const [email, setEmail] = useState('');
-  const [intervalKey, setIntervalKey] = useState<NodeJS.Timer | boolean>(false);
+  const [intervalKey, setIntervalKey] = useState<boolean>(false);
   const { pathname, push } = useRouter();
   const FiveMin = 1000 * 60 * 5;
 

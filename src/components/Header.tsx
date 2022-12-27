@@ -34,6 +34,7 @@ export default function Header() {
               <Fragment>
                 <Link href='/main-page'>Home</Link>
                 <Link href='/profile'>Perfil</Link>
+                <Link href='/labs'>Labs</Link>
                 <Button onClick={handleClick}>Logout</Button>
               </Fragment>
             ) : (

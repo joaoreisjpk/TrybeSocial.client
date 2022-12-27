@@ -1,21 +1,10 @@
+import { IJob, IUser, IuserTokenResponse } from './interfaces';
+
 const URL = process.env.URL || 'http://localhost:3333';
 
-interface IuserTokenResponse {
-  acessToken?: string;
-  refreshToken?: string;
-  error?: string;
-}
-
-interface IUser {
-  email: string
-  firstName: string
-  lastName: string
-}
-
 export async function fetchLogin(body: string) {
-  let response;
   try {
-    response = (await fetch(`${URL}/auth/signin`, {
+    return (await fetch(`${URL}/auth/signin`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -25,8 +14,6 @@ export async function fetchLogin(body: string) {
   } catch (err) {
     return {};
   }
-
-  return response;
 }
 
 export async function fetchRefreshToken(token: string, id: number) {
@@ -60,4 +47,27 @@ export function getUser(email: string): Promise<IUser> {
       'Content-Type': 'application/json',
     },
   }).then((data) => data.json());
+}
+
+export function listJobs(): Promise<IJob[]> {
+  return fetch(`${URL}/jobs`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }).then((data) => data.json());
+}
+
+export async function createJob(body: IJob) {
+  try {
+    return (await fetch(`${URL}/jobs`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    }).then((data) => data.json())) as IuserTokenResponse;
+  } catch (err) {
+    return {};
+  }
 }
