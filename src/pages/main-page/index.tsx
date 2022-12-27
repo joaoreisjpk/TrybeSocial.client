@@ -1,14 +1,21 @@
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-import Header from '../../components/Header';
+import { Button } from 'react-bootstrap';
 import { useAuth } from '../../hooks/useAuth';
-import { fetchRefreshToken } from '../../helpers/fetchers';
+import { createJob, fetchRefreshToken, listJobs } from '../../helpers/fetchers';
 import JWT, { decrypt } from '../../helpers/Encrypt';
 import {
-  setCookieAt, setCookieRt, destroyCookie, parseCookies,
+  setCookieAt,
+  setCookieRt,
+  destroyCookie,
+  parseCookies,
 } from '../../helpers/cookie';
+import Header from '../../components/Header';
+import JobItem from '../../components/JobItem';
+import { IJob } from '../../helpers/interfaces';
+import TrybeModal from '../../components/TrybeModal';
 
 interface IServerSideProps {
   email: string;
@@ -16,8 +23,21 @@ interface IServerSideProps {
 
 export default function MainPage({ email: propEmail }: IServerSideProps) {
   const { email, setEmail } = useAuth();
+  const [jobsList, setJobsList] = useState<IJob[]>([]);
+  const [isCreateJobModalOpen, setIsCreateJobModalOpen] = useState(false);
+
+  async function getJobList() {
+    setJobsList(await listJobs());
+  }
+
+  async function postNewJob() {
+    await createJob({ name: '#vqv', external_link: 'https://www.youtube.com/?gl=BR&hl=pt' });
+    await getJobList();
+    setIsCreateJobModalOpen(false);
+  }
 
   useEffect(() => {
+    getJobList();
     if (email === '') {
       setEmail(propEmail);
     }
@@ -31,8 +51,17 @@ export default function MainPage({ email: propEmail }: IServerSideProps) {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <Header />
-      <h1>Main Page</h1>
-      <h2>Você está logado com o email: {email}</h2>
+      <h1>Vagas</h1>
+      <Button onClick={() => setIsCreateJobModalOpen(true)}>Criar nova Vaga</Button>{' '}
+
+      {jobsList.map((data) => <JobItem data={data} key={data.name}/>)}
+      <TrybeModal
+        title='Criar nova Vaga'
+        body='Criar nova vagaa'
+        onSubmit={postNewJob}
+        show={isCreateJobModalOpen}
+        setShow={setIsCreateJobModalOpen}
+      />
     </div>
   );
 }
