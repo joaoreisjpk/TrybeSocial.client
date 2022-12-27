@@ -1,4 +1,6 @@
-import { IJob, IUser, IuserTokenResponse } from './interfaces';
+import {
+  IJob, ILab, IUser, IuserTokenResponse,
+} from './interfaces';
 
 const URL = process.env.URL || 'http://localhost:3333';
 
@@ -61,6 +63,29 @@ export function listJobs(): Promise<IJob[]> {
 export async function createJob(body: IJob) {
   try {
     return (await fetch(`${URL}/jobs`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    }).then((data) => data.json())) as IuserTokenResponse;
+  } catch (err) {
+    return {};
+  }
+}
+
+export function listLabs(): Promise<ILab[]> {
+  return fetch(`${URL}/labs`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }).then((data) => data.json());
+}
+
+export async function createLab(body: ILab) {
+  try {
+    return (await fetch(`${URL}/labs`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
