@@ -1,11 +1,27 @@
 {
-  "extends": ["next", "airbnb-base", "eslint:recommended"],
+  "extends": [
+    "next",
+    "airbnb-base",
+    "eslint:recommended",
+    "plugin:react/recommended"
+  ],
   "rules": {
-    "import/extensions": ["error", "never", {
-      "js": "never",
-      "tsx": "never",
-      "ts": "never",
-      "jsx": "never"
-    }]
+    "react/jsx-indent": [
+      2,
+      2,
+      { "checkAttributes": true, "indentLogicalExpressions": true }
+    ],
+    "react/react-in-jsx-scope": "off",
+    "react/jsx-indent-props": [2, 2],
+    "import/extensions": [
+      "error",
+      "never",
+      {
+        "js": "never",
+        "tsx": "never",
+        "ts": "never",
+        "jsx": "never"
+      }
+    ]
   }
 }

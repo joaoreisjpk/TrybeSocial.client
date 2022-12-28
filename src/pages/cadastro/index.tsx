@@ -18,9 +18,7 @@ export default function Login() {
   const [trybe, setTrybe] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const handleClick = async (
-    e: MouseEvent<HTMLButtonElement>,
-  ) => {
+  const handleClick = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
     const URL = process.env.URL || 'http://localhost:3333';

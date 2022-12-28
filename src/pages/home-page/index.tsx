@@ -25,7 +25,10 @@ export default function MainPage() {
   }
 
   async function postNewJob() {
-    await createJob({ name: '#vqv', external_link: 'https://www.youtube.com/?gl=BR&hl=pt' });
+    await createJob({
+      name: '#vqv',
+      external_link: 'https://www.youtube.com/?gl=BR&hl=pt',
+    });
     await getJobList();
     setIsCreateJobModalOpen(false);
   }
@@ -43,9 +46,12 @@ export default function MainPage() {
       </Head>
       <Header />
       <h1>Vagas</h1>
-      <Button onClick={() => setIsCreateJobModalOpen(true)}>Criar nova Vaga</Button>{' '}
-
-      {jobsList.map((data) => <JobItem data={data} key={data.name}/>)}
+      <Button onClick={() => setIsCreateJobModalOpen(true)}>
+        Criar nova Vaga
+      </Button>{' '}
+      {jobsList.map((data) => (
+        <JobItem data={data} key={data.name} />
+      ))}
       <TrybeModal
         title='Criar nova Vaga'
         body='Criar nova vagaa'
@@ -101,6 +107,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   }
 
   return {
-    props: { },
+    props: {},
   };
 };
