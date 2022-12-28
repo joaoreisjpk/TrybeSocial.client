@@ -2,7 +2,6 @@ import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
 
-import { Button } from 'react-bootstrap';
 import { createLab, fetchRefreshToken, listLabs } from '../../helpers/fetchers';
 import JWT, { decrypt } from '../../helpers/Encrypt';
 import {
@@ -15,6 +14,7 @@ import Header from '../../components/Header';
 import JobItem from '../../components/JobItem';
 import { IJob } from '../../helpers/interfaces';
 import TrybeModal from '../../components/TrybeModal';
+import MUIButton from '../../components/UI/MUIButton';
 
 export default function Labs() {
   const [LabsList, setLabsList] = useState<IJob[]>([]);
@@ -43,7 +43,7 @@ export default function Labs() {
       </Head>
       <Header />
       <h1>Labs</h1>
-      <Button onClick={() => setIsCreateLabModalOpen(true)}>Criar novo Lab</Button>{' '}
+      <MUIButton onClick={() => setIsCreateLabModalOpen(true)}>Criar novo Lab</MUIButton>{' '}
 
       {LabsList.map((data) => <JobItem data={data} key={data.name}/>)}
       <TrybeModal

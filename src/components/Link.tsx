@@ -1,6 +1,7 @@
 import NextLink, { LinkProps } from 'next/link';
+import MUILink from '@mui/material/Link';
 import { AnchorHTMLAttributes, DetailedHTMLProps } from 'react';
-import { Nav } from 'react-bootstrap';
+import { Box } from '@mui/material';
 
 interface AnchorProps
   extends DetailedHTMLProps<
@@ -12,8 +13,12 @@ interface AnchorProps
 
 export default function Link({ children, ...props }: LinkProps & AnchorProps) {
   return (
-    <NextLink href={props.href} passHref>
-      <Nav.Link href='#'>{children}</Nav.Link>
-    </NextLink>
+    <Box mx={1.5} sx={{ display: 'inline-block' }}>
+      <NextLink href={props.href} passHref>
+        <MUILink variant="body1" component='button' color='black' underline='none'>
+          {children}
+        </MUILink>
+      </NextLink>
+    </Box>
   );
 }

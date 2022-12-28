@@ -1,14 +1,11 @@
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next';
-import { MouseEvent, useState } from 'react';
-import Button from 'react-bootstrap/Button';
-import Container from 'react-bootstrap/Container';
-import Form from 'react-bootstrap/Form';
+import { useState } from 'react';
+import { Form, Formik } from 'formik';
 
+import { CircularProgress } from '@mui/material';
 import Header from '../../components/Header';
-import FormInput from './_formInput';
-import * as Validation from '../../helpers/validation';
 import { useAuth } from '../../hooks/useAuth';
 import { fetchLogin, fetchRefreshToken } from '../../helpers/fetchers';
 import JWT, { decrypt, encrypt } from '../../helpers/Encrypt';
@@ -18,79 +15,54 @@ import {
   destroyCookie,
   parseCookies,
 } from '../../helpers/cookie';
+import MUIButton from '../../components/UI/MUIButton';
+import MUInput from '../../components/UI/MUInput';
 
-const INITIAL_CONDITION = {
-  valid: false,
-  invalid: false,
-  msg: '',
-};
+interface IUserInput {
+  email: string
+  password: string
+}
+
+function formValidation({ email, password }: IUserInput) {
+  const response = {} as IUserInput;
+  if (!email.match(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/)) {
+    response.email = 'Email Inválido';
+  }
+  if (password.length <= 5) {
+    response.password = 'A senha precisa ter mais que 5 digitos';
+  }
+
+  return response;
+}
 
 const jwt = new JWT();
 
 export default function Login() {
-  const { push } = useRouter();
-  const [user, setUser] = useState('');
-  const [password, setPassword] = useState('');
-  const [emailCondition, setEmailCondition] = useState(INITIAL_CONDITION);
-  const [passwordCondition, setPasswordCondition] = useState(INITIAL_CONDITION);
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const [unauthorized, setUnauthotorized] = useState('');
   const { setEmail } = useAuth();
 
-  const emailValidation = (emailValue: string) => {
-    const emailResult = Validation.emailVerifier(emailValue);
-    if (emailResult) {
-      return setEmailCondition({
-        valid: false,
-        invalid: true,
-        msg: emailResult,
-      });
-    }
-
-    setEmailCondition({ valid: true, invalid: false, msg: '' });
-    return null;
-  };
-
-  const passwordValidation = (passwordValue: string) => {
-    const passwordResult = Validation.passwordVerifier(passwordValue);
-    if (passwordResult) {
-      return setPasswordCondition({
-        valid: false,
-        invalid: true,
-        msg: passwordResult,
-      });
-    }
-
-    setPasswordCondition({ valid: true, invalid: false, msg: '' });
-    return null;
-  };
-
-  const handleButtonDisable = () => (
-    !!Validation.emailVerifier(user) || !!Validation.passwordVerifier(password)
-  );
-
-  const handleClick = async (
-    e: MouseEvent<HTMLButtonElement>,
-  ) => {
-    e.preventDefault();
-
+  const handleClick = async ({ email, password }: IUserInput) => {
     const body = JSON.stringify({
-      email: user,
+      email,
       password: encrypt(password),
     });
 
+    setIsLoading(true);
     const { acessToken, refreshToken, error } = await fetchLogin(body);
 
     if (acessToken && refreshToken) {
       setCookieAt('tokenAt', acessToken);
       setCookieRt('tokenRt', refreshToken);
-      const { email } = jwt.decode(acessToken) as { email: string };
-      setEmail(email);
-      push('/main-page');
+      const { email: jwtEmail } = jwt.decode(acessToken) as { email: string };
+      setEmail(jwtEmail);
+      router.push('/home');
+      setIsLoading(false);
       return;
     }
     setUnauthotorized(error || 'Algum erro ocorreu');
-    setEmailCondition(INITIAL_CONDITION);
-    setPasswordCondition(INITIAL_CONDITION);
+    setIsLoading(false);
   };
 
   return (
@@ -101,52 +73,39 @@ export default function Login() {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <Header />
-      <Container className='d-flex mt-5 justify-content-center'>
-        <Form action=''>
-          <Form.Group className='mb-3'>
-            <h1 className='mb-3'>Login</h1>
-            <Form.Label>E-mail</Form.Label>
-            <FormInput
-              stateCondition={emailCondition}
-              value={user}
-              setValue={setUser}
-              validation={emailValidation}
-              name='user'
-            />
-          </Form.Group>
-          <Form.Group className='mb-3'>
-            <Form.Label>Password</Form.Label>
-            <FormInput stateCondition={passwordCondition} value={password}
-              setValue={setPassword}
-              validation={passwordValidation}
-              name='password'
-            />
-          </Form.Group>
-          <Form.Group className='mb-3'>
-            <Button
-              variant='outline-dark'
-              size='lg'
-              onClick={handleClick}
+      <Formik
+        initialValues={{
+          email: '',
+          password: '',
+        }}
+        validate={formValidation}
+        onSubmit={handleClick}
+      >
+        {() => (
+          <Form>
+            <MUInput name='email' type="text" label='E-mail' />
+            <MUInput name='password' type='password' label='Password' />
+
+            <MUIButton
               type='submit'
-              disabled={handleButtonDisable()}
+              variant='contained'
+              bgColor='#44b365'
+              size='small'
+              disabled={false}
+              sx={{
+                margin: '0',
+                height: '3.4rem',
+                textTransform: 'uppercase',
+                width: '8rem',
+              }}
             >
-              Login
-            </Button>
-            <span className='m-1' />
-            <Button
-              variant='outline-dark'
-              size='lg'
-              type='button'
-              onClick={() => push('/cadastro')}
-            >
-              Quero me Cadastrar
-            </Button>
-            <Form.Text className='d-block font-monospace text-danger fw-bolder'>
-              {unauthorized}
-            </Form.Text>
-          </Form.Group>
-        </Form>
-      </Container>
+              {isLoading ? <CircularProgress /> : 'Login'}
+            </MUIButton>
+            {unauthorized}
+          </Form>
+        )}
+
+      </Formik>
     </div>
   );
 }
@@ -169,7 +128,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       return {
         props: {},
         redirect: {
-          destination: '/main-page',
+          destination: '/home',
           permanent: false,
         },
       };
