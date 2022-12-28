@@ -27,7 +27,7 @@ export default function MainPage() {
   async function postNewJob() {
     await createJob({
       name: '#vqv',
-      external_link: 'https://www.youtube.com/?gl=BR&hl=pt',
+      link: 'https://www.youtube.com/?gl=BR&hl=pt',
     });
     await getJobList();
     setIsCreateJobModalOpen(false);

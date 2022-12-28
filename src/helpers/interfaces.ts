@@ -12,10 +12,10 @@ export interface IUser {
 
 export interface IJob {
   name: string
-  external_link: string
+  link: string
 }
 
 export interface ILab {
   name: string
-  external_link: string
+  link: string
 }

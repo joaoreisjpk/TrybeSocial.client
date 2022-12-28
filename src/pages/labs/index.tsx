@@ -25,7 +25,7 @@ export default function Labs() {
   }
 
   async function postNewLab() {
-    await createLab({ name: '#koeeee negada', external_link: 'https://www.youtube.com/?gl=BR&hl=pt' });
+    await createLab({ name: '#koeeee negada', link: 'https://www.youtube.com/?gl=BR&hl=pt' });
     await getLabsList();
     setIsCreateLabModalOpen(false);
   }
