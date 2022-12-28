@@ -1,30 +1,38 @@
 import { Dispatch, SetStateAction } from 'react';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 interface ModalProps {
-  title: string
-  body: string
-  onSubmit: () => void
-  show: boolean
-  setShow: Dispatch<SetStateAction<boolean>>
+  title: string;
+  body: string;
+  onSubmit: () => void;
+  show: boolean;
+  setShow: Dispatch<SetStateAction<boolean>>;
 }
 
+/* const levels = ['Júnior', 'Pleno', 'Senior'];
+const frameworks = ['Node', 'React', 'Ruby on Rails', 'Vue'];
+const languages = ['JavaScript', 'TypeScript'];
+ */
 export default function TrybeModal(props: ModalProps) {
+  function closeDialog() {
+    props.setShow(false);
+  }
+
   return (
-    <Modal show={props.show} >
-      <Modal.Header closeButton>
-        <Modal.Title>{props.title}</Modal.Title>
-      </Modal.Header>
-
-      <Modal.Body>
-        <p>{props.body}</p>
-      </Modal.Body>
-
-      <Modal.Footer>
-        <Button variant="secondary" onClick={() => props.setShow(false)}>Close</Button>
-        <Button variant="primary" onClick={props.onSubmit}>Save changes</Button>
-      </Modal.Footer>
-    </Modal>
+    <Dialog open={props.show} onBlur={closeDialog}>
+      <DialogTitle>{props.title}</DialogTitle>
+      <DialogContent>
+        <DialogContentText>{props.body}</DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={closeDialog}>Cancelar</Button>
+        <Button onClick={props.onSubmit}>Criar Vaga</Button>
+      </DialogActions>
+    </Dialog>
   );
 }

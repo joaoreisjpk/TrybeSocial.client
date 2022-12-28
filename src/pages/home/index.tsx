@@ -2,7 +2,6 @@ import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
 
-import { Button } from 'react-bootstrap';
 import { createJob, fetchRefreshToken, listJobs } from '../../helpers/fetchers';
 import JWT, { decrypt } from '../../helpers/Encrypt';
 import {
@@ -15,6 +14,7 @@ import Header from '../../components/Header';
 import JobItem from '../../components/JobItem';
 import { IJob } from '../../helpers/interfaces';
 import TrybeModal from '../../components/TrybeModal';
+import MUIButton from '../../components/UI/MUIButton';
 
 export default function MainPage() {
   const [jobsList, setJobsList] = useState<IJob[]>([]);
@@ -46,9 +46,9 @@ export default function MainPage() {
       </Head>
       <Header />
       <h1>Vagas</h1>
-      <Button onClick={() => setIsCreateJobModalOpen(true)}>
+      <MUIButton onClick={() => setIsCreateJobModalOpen(true)}>
         Criar nova Vaga
-      </Button>{' '}
+      </MUIButton>{' '}
       {jobsList.map((data) => (
         <JobItem data={data} key={data.name} />
       ))}

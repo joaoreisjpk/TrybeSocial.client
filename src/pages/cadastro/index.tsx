@@ -1,41 +1,63 @@
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { MouseEvent, useState } from 'react';
-import Row from 'react-bootstrap/Row';
-import Form from 'react-bootstrap/Form';
-import Container from 'react-bootstrap/Container';
-import Button from 'react-bootstrap/Button';
-import Col from 'react-bootstrap/Col';
+import { useState } from 'react';
 
+import { Form, Formik } from 'formik';
+import { Checkbox, CircularProgress, FormControlLabel } from '@mui/material';
 import Header from '../../components/Header';
+import MUInput from '../../components/UI/MUInput';
+import MUIButton from '../../components/UI/MUIButton';
+
+interface ISignUpData {
+  firstName: string
+  lastName: string
+  email: string
+  password: string
+  confirmPassword?: string,
+  trybe?: string,
+  terms?: boolean | string,
+}
+
+function formValidation(signUpData: ISignUpData) {
+  const response = {} as ISignUpData;
+  if (!signUpData.email.match(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/)) {
+    response.email = 'Email Inválido';
+  }
+  if (signUpData.firstName.length < 4) {
+    response.firstName = 'O Nome precisa ter pelo menos 4 digitos';
+  }
+  if (signUpData.lastName.length < 4) {
+    response.lastName = 'O Sobrenome precisa ter pelo menos 4 digitos';
+  }
+  if (!signUpData.trybe || signUpData.trybe.length < 4) {
+    response.trybe = 'A turma precisa ter pelo menos 4 digitos';
+  }
+  if (signUpData.password.length <= 5) {
+    response.password = 'A senha precisa ter mais que 5 digitos';
+  }
+  if (signUpData.password !== signUpData.confirmPassword) {
+    response.confirmPassword = 'As senhas precisam ser iguais';
+  }
+  /* if (!signUpData.terms) {
+    response.terms = 'É necessário assinar os termos';
+  } */
+
+  return response;
+}
 
 export default function Login() {
   const { push } = useRouter();
-  const [user, setUser] = useState('');
-  const [password, setPassword] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [trybe, setTrybe] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleClick = async (e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-
+  const handleClick = async (submitData: ISignUpData) => {
     const URL = process.env.URL || 'http://localhost:3333';
 
-    const body = JSON.stringify({
-      email: user,
-      password,
-      firstName,
-      lastName,
-      trybe,
-    });
+    const body = JSON.stringify(submitData);
 
+    setIsLoading(true);
     const response = (await fetch(`${URL}/auth/signup`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body,
     }).then((data) => data.json())) as { acessToken: string } | any;
 
@@ -43,6 +65,8 @@ export default function Login() {
       push('/login');
       return;
     }
+    setIsLoading(false);
+
     alert('usuário já existe');
   };
 
@@ -54,108 +78,46 @@ export default function Login() {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <Header />
-      <Container className='d-flex justify-content-center'>
-        <Form className='mt-5 mw-25'>
-          <h1 className='mb-4'>Cadastro</h1>
-          <Row className='mb-3'>
-            <Form.Group as={Col} md='5' controlId='validationCustom01'>
-              <Form.Label>Nome</Form.Label>
-              <Form.Control
-                type='text'
-                name='firstName'
-                className=''
-                value={firstName}
-                onChange={({ target }) => setFirstName(target.value)}
-                id='firstName'
-              />
-              <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-            </Form.Group>
-            <Form.Group as={Col} md='7' controlId='validationCustom02'>
-              <Form.Label>Sobrenome</Form.Label>
-              <Form.Control
-                type='text'
-                name='lastName'
-                className=''
-                value={lastName}
-                onChange={({ target }) => setLastName(target.value)}
-                id='lastName'
-              />
-              <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-            </Form.Group>
-          </Row>
-          <Row className='mb-3'>
-            <Form.Group as={Col} md='8' controlId='validationCustom03'>
-              <Form.Label>E-mail</Form.Label>
-              <Form.Control
-                type='text'
-                name='user'
-                className=''
-                value={user}
-                onChange={({ target }) => setUser(target.value)}
-                id='user'
-              />
-              <Form.Control.Feedback type='invalid'>
-                Please provide a valid city.
-              </Form.Control.Feedback>
-            </Form.Group>
-            <Form.Group as={Col} md='4' controlId='validationCustom03'>
-              <Form.Label>Turma</Form.Label>
-              <Form.Control
-                type='text'
-                name='user'
-                className=''
-                value={trybe}
-                onChange={({ target }) => setTrybe(target.value)}
-                id='user'
-              />
-              <Form.Control.Feedback type='invalid'>
-                Please provide a valid city.
-              </Form.Control.Feedback>
-            </Form.Group>
-          </Row>
-          <Row className='mb-3'>
-            <Form.Group as={Col} md='6' controlId='validationCustom04'>
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type='password'
-                name='password'
-                className=''
-                value={password}
-                onChange={({ target }) => setPassword(target.value)}
-                id='password'
-              />
-              <Form.Control.Feedback type='invalid'>
-                Please provide a valid state.
-              </Form.Control.Feedback>
-            </Form.Group>
-            <Form.Group as={Col} md='6' controlId='validationCustom05'>
-              <Form.Label>Confirm Password</Form.Label>
-              <Form.Control
-                type='password'
-                name='password'
-                className=''
-                value={confirmPassword}
-                onChange={({ target }) => setConfirmPassword(target.value)}
-                id='password'
-              />
-              <Form.Control.Feedback type='invalid'>
-                Please provide a valid zip.
-              </Form.Control.Feedback>
-            </Form.Group>
-          </Row>
-          <Form.Group className='mb-3'>
-            <Form.Check
-              required
-              label='Agree to terms and conditions'
-              feedback='You must agree before submitting.'
-              feedbackType='invalid'
-            />
-          </Form.Group>
-          <Button type='button' onClick={handleClick}>
-            Submit form
-          </Button>
-        </Form>
-      </Container>
+      <Formik
+        initialValues={{
+          firstName: '',
+          lastName: '',
+          email: '',
+          trybe: '',
+          password: '',
+          confirmPassword: '',
+          terms: false,
+        }}
+        validate={formValidation}
+        onSubmit={handleClick}
+      >
+        {() => (
+          <Form>
+            <MUInput size='medium' name='firstName' type="text" label='Nome' />
+            <MUInput name='lastName' type="text" label='Sobrenome' />
+            <MUInput name='email' type="text" label='E-mail' />
+            <MUInput name='trybe' type="text" label='Tribo' />
+            <MUInput name='password' type='password' label='Senha' />
+            <MUInput name='confirmPassword' type='password' label='Confirme a senha' />
+            <FormControlLabel control={<Checkbox name="terms"/>} label="Aceitar termos e condições" />
+            <MUIButton
+              type='submit'
+              variant='contained'
+              bgColor='#44b365'
+              size='large'
+              disabled={false}
+              sx={{
+                margin: '0',
+                height: '3.4rem',
+                width: '8rem',
+              }}
+            >
+              {isLoading ? <CircularProgress /> : 'Login'}
+            </MUIButton>
+          </Form>
+        )}
+
+      </Formik>
     </div>
   );
 }
