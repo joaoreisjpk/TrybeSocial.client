@@ -2,9 +2,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next';
 import { useState } from 'react';
-import { Form, Formik } from 'formik';
-
-import { CircularProgress } from '@mui/material';
+import { Box, Container } from '@mui/material';
 import Header from '../../components/Header';
 import { useAuth } from '../../hooks/useAuth';
 import { fetchLogin, fetchRefreshToken } from '../../helpers/fetchers';
@@ -15,12 +13,11 @@ import {
   destroyCookie,
   parseCookies,
 } from '../../helpers/cookie';
-import MUIButton from '../../components/UI/MUIButton';
-import MUInput from '../../components/UI/MUInput';
+import FormBuilder from '../../components/UI/FormBuilder';
 
 interface IUserInput {
-  email: string
-  password: string
+  email: string;
+  password: string;
 }
 
 function formValidation({ email, password }: IUserInput) {
@@ -65,6 +62,20 @@ export default function Login() {
     setIsLoading(false);
   };
 
+  const fieldProps = {
+    globalProps: {
+      sizes: { xs: 12 },
+    },
+    components: [
+      { props: { name: 'email', label: 'E-mail' } },
+      { props: { name: 'password', type: 'password', label: 'Senha' } },
+      {
+        type: 'submitBtn',
+        props: { name: 'login', label: 'Entrar', isLoading },
+      },
+    ],
+  };
+
   return (
     <div>
       <Head>
@@ -73,39 +84,19 @@ export default function Login() {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <Header />
-      <Formik
-        initialValues={{
-          email: '',
-          password: '',
-        }}
-        validate={formValidation}
-        onSubmit={handleClick}
-      >
-        {() => (
-          <Form>
-            <MUInput name='email' type="text" label='E-mail' />
-            <MUInput name='password' type='password' label='Password' />
-
-            <MUIButton
-              type='submit'
-              variant='contained'
-              bgColor='#44b365'
-              size='small'
-              disabled={false}
-              sx={{
-                margin: '0',
-                height: '3.4rem',
-                textTransform: 'uppercase',
-                width: '8rem',
-              }}
-            >
-              {isLoading ? <CircularProgress /> : 'Login'}
-            </MUIButton>
-            {unauthorized}
-          </Form>
-        )}
-
-      </Formik>
+      <Container>
+        <Box my={5}>
+          <h1>Faça seu Login</h1>
+        </Box>
+        <Box maxWidth={'350px'}>
+          <FormBuilder
+            initialValues={{ email: '', password: '' }}
+            validate={formValidation}
+            onSubmit={handleClick}
+            formFields={fieldProps}
+          />
+        </Box>
+      </Container>
     </div>
   );
 }

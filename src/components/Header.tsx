@@ -38,8 +38,9 @@ export default function Header() {
               <Link href='/labs'>Labs</Link>
               <MUIButton
                 bgColor='black'
-                sx={{ color: 'white' }}
+                sx={{ color: 'white', padding: '.4rem 1rem', marginLeft: '1rem' }}
                 onClick={handleClick}
+                size="large"
               >
                 Logout
               </MUIButton>

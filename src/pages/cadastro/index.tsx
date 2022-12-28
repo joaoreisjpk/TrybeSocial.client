@@ -1,21 +1,19 @@
+import { Box, Container } from '@mui/material';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 
-import { Form, Formik } from 'formik';
-import { Checkbox, CircularProgress, FormControlLabel } from '@mui/material';
 import Header from '../../components/Header';
-import MUInput from '../../components/UI/MUInput';
-import MUIButton from '../../components/UI/MUIButton';
+import FormBuilder from '../../components/UI/FormBuilder';
 
 interface ISignUpData {
-  firstName: string
-  lastName: string
-  email: string
-  password: string
-  confirmPassword?: string,
-  trybe?: string,
-  terms?: boolean | string,
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  confirmPassword?: string;
+  trybe?: string;
+  terms?: boolean | string;
 }
 
 function formValidation(signUpData: ISignUpData) {
@@ -70,6 +68,53 @@ export default function Login() {
     alert('usuário já existe');
   };
 
+  const initialValues = {
+    firstName: '',
+    lastName: '',
+    email: '',
+    trybe: '',
+    password: '',
+    confirmPassword: '',
+    terms: false,
+  };
+
+  const formFields = {
+    globalProps: {
+      sizes: {
+        xs: 12,
+        sm: 6,
+      },
+    },
+    components: [
+      {
+        props: { name: 'firstName', label: 'Nome' },
+      },
+      {
+        props: { name: 'lastName', label: 'Sobrenome' },
+      },
+      {
+        props: { name: 'email', label: 'E-mail' },
+      },
+      {
+        props: { name: 'trybe', label: 'Tribo' },
+      },
+      {
+        props: { name: 'password', label: 'Senha', type: 'password' },
+      },
+      {
+        props: { name: 'confirmPassword', label: 'Confirmar a Senha', type: 'password' },
+      },
+      {
+        type: 'checkbox',
+        props: { name: 'terms', label: 'Aceitar os Termos' },
+      },
+      {
+        type: 'submitBtn',
+        props: { label: 'Login', isLoading },
+      },
+    ],
+  };
+
   return (
     <div>
       <Head>
@@ -78,46 +123,21 @@ export default function Login() {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <Header />
-      <Formik
-        initialValues={{
-          firstName: '',
-          lastName: '',
-          email: '',
-          trybe: '',
-          password: '',
-          confirmPassword: '',
-          terms: false,
-        }}
-        validate={formValidation}
-        onSubmit={handleClick}
-      >
-        {() => (
-          <Form>
-            <MUInput size='medium' name='firstName' type="text" label='Nome' />
-            <MUInput name='lastName' type="text" label='Sobrenome' />
-            <MUInput name='email' type="text" label='E-mail' />
-            <MUInput name='trybe' type="text" label='Tribo' />
-            <MUInput name='password' type='password' label='Senha' />
-            <MUInput name='confirmPassword' type='password' label='Confirme a senha' />
-            <FormControlLabel control={<Checkbox name="terms"/>} label="Aceitar termos e condições" />
-            <MUIButton
-              type='submit'
-              variant='contained'
-              bgColor='#44b365'
-              size='large'
-              disabled={false}
-              sx={{
-                margin: '0',
-                height: '3.4rem',
-                width: '8rem',
-              }}
-            >
-              {isLoading ? <CircularProgress /> : 'Login'}
-            </MUIButton>
-          </Form>
-        )}
 
-      </Formik>
+      <Container>
+        <Box my={5} >
+          <h1>Faça seu Cadastro</h1>
+        </Box>
+        <Box maxWidth={'700px'}>
+          <FormBuilder
+            initialValues={initialValues}
+            formValidation={formValidation}
+            onSubmit={handleClick}
+            formFields={formFields}
+            isLoading={isLoading}
+          />
+        </Box>
+      </Container>
     </div>
   );
 }
