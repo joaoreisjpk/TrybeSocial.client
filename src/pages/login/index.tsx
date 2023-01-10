@@ -37,7 +37,6 @@ const jwt = new JWT();
 export default function Login() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [unauthorized, setUnauthotorized] = useState('');
   const { setEmail } = useAuth();
 
   const handleClick = async ({ email, password }: IUserInput) => {
@@ -47,7 +46,7 @@ export default function Login() {
     });
 
     setIsLoading(true);
-    const { acessToken, refreshToken, error } = await fetchLogin(body);
+    const { acessToken, refreshToken } = await fetchLogin(body);
 
     if (acessToken && refreshToken) {
       setCookieAt('tokenAt', acessToken);
@@ -58,7 +57,6 @@ export default function Login() {
       setIsLoading(false);
       return;
     }
-    setUnauthotorized(error || 'Algum erro ocorreu');
     setIsLoading(false);
   };
 

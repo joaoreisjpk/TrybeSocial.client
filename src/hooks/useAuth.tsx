@@ -34,7 +34,7 @@ export const AuthContext = createContext({} as IContext);
 
 export function ResultsProvider({ children }: IProvider) {
   const [email, setEmail] = useState('');
-  const [intervalKey, setIntervalKey] = useState<boolean>(false);
+  const [intervalKey, setIntervalKey] = useState<NodeJS.Timer>();
   const { pathname, push } = useRouter();
   const FiveMin = 1000 * 60 * 5;
 
@@ -70,9 +70,8 @@ export function ResultsProvider({ children }: IProvider) {
       const intervalId = setInterval(RefreshTokenFunction, FiveMin);
       setIntervalKey(intervalId);
     }
-    if (pathname === '/login' && intervalKey) {
+    if (pathname === '/login') {
       clearInterval(intervalKey as NodeJS.Timeout);
-      setIntervalKey(false);
     }
   }, [pathname, FiveMin, RefreshTokenFunction, intervalKey]);
 
