@@ -3,13 +3,13 @@ import CryptoJS from 'crypto-js';
 
 type payloadType = { userId: number; email?: string };
 
-const secret = process.env.JWT_SECRET || '';
+const secret = process.env.JWT_SECRET || process.env.NEXT_PUBLIC_JWT_SECRET;
 
 export default class JWT {
   private secret: string;
 
   constructor() {
-    this.secret = process.env.JWT_SECRET as string;
+    this.secret = secret as string;
   }
 
   sign(payload: payloadType, expiresIn: string) {
