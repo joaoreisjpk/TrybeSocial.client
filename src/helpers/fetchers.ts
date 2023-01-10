@@ -2,9 +2,11 @@ import {
   IJob, ILab, IUser, IuserTokenResponse,
 } from './interfaces';
 
-const URL = process.env.URL || 'http://localhost:3333';
+const { URL } = process.env;
+console.log(URL);
 
 export async function fetchLogin(body: string) {
+  console.log(URL);
   try {
     return (await fetch(`${URL}/auth/signin`, {
       method: 'POST',
@@ -19,6 +21,7 @@ export async function fetchLogin(body: string) {
 }
 
 export async function fetchRefreshToken(token: string, id: number) {
+  console.log(URL);
   try {
     const tokenResponse = await fetch(`${URL}/auth/refresh/${id}`, {
       method: 'POST',

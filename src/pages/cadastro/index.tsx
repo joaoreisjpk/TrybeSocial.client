@@ -48,8 +48,8 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleClick = async (submitData: ISignUpData) => {
-    const URL = process.env.URL || 'http://localhost:3333';
-
+    const { URL } = process.env;
+    console.log(URL);
     const body = JSON.stringify(submitData);
 
     setIsLoading(true);

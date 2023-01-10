@@ -29,9 +29,7 @@ export default class JWT {
 }
 
 // Encrypt
-export const encrypt = (message: string) =>
-  CryptoJS.AES.encrypt(message, secret).toString();
-
+export const encrypt = (message: string) => CryptoJS.AES.encrypt(message, secret).toString();
 // Decrypt
 export const decrypt = (message: string) => {
   const bytes = CryptoJS.AES.decrypt(message || '', secret);
