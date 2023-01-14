@@ -49,7 +49,6 @@ export default function Login() {
 
   const handleClick = async (submitData: ISignUpData) => {
     const URL = process.env.URL || process.env.NEXT_PUBLIC_URL;
-    console.log(URL);
     const body = JSON.stringify(submitData);
 
     setIsLoading(true);

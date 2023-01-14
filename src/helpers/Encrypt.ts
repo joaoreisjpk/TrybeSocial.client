@@ -24,14 +24,15 @@ export default class JWT {
   }
 
   decode(token: string) {
+    console.log('koe');
     return jwt.decode(token) as payloadType;
   }
 }
 
-// Encrypt
-export const encrypt = (message: string) => CryptoJS.AES.encrypt(message, secret).toString();
 // Decrypt
 export const decrypt = (message: string) => {
   const bytes = CryptoJS.AES.decrypt(message || '', secret);
   return bytes.toString(CryptoJS.enc.Utf8);
 };
+// Encrypt
+export const encrypt = (message: string) => CryptoJS.AES.encrypt(message, secret).toString();
