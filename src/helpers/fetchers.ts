@@ -2,7 +2,7 @@ import {
   IJob, ILab, IUser, IuserTokenResponse,
 } from './interfaces';
 
-const URL = process.env.URL || process.env.NEXT_PUBLIC_URL;
+const URL = process.env.NEXT_PUBLIC_URL || process.env.URL;
 
 export async function fetchLogin(body: string) {
   try {
