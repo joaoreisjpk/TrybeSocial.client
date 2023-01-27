@@ -1,8 +1,7 @@
-export interface IuserTokenResponse {
-  acessToken?: string;
-  refreshToken?: string;
-  error?: string;
-}
+// export interface IuserTokenResponse {
+//   accessToken: string;
+//   refreshToken: string;
+// }
 
 export interface IUser {
   email: string

@@ -1,15 +1,17 @@
 import Button, { ButtonProps } from '@mui/material/Button';
+import LoadingButton from '@mui/lab/LoadingButton';
 
 interface IButton extends ButtonProps {
   children: any;
   bgColor?: string;
+  isLoading?: boolean
 }
 
 export default function MUIButton({
-  bgColor, size, sx, children, ...rest
+  bgColor, size, sx, children, isLoading, ...rest
 }: IButton) {
   return (
-    <Button
+    <LoadingButton
       sx={{
         background: bgColor,
         textTransform: 'none',
@@ -21,9 +23,10 @@ export default function MUIButton({
         ...sx,
       }}
       {...rest}
+      loading={isLoading}
       size={size || 'medium'}
     >
       {children}
-    </Button>
+    </LoadingButton>
   );
 }

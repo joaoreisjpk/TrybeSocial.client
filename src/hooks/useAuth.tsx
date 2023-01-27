@@ -5,82 +5,78 @@ import {
   useEffect,
   Dispatch,
   SetStateAction,
-  useCallback,
 } from 'react';
 import { useRouter } from 'next/router';
 
-import JWT from '../helpers/Encrypt';
-import { fetchLogout, fetchRefreshToken } from '../helpers/fetchers';
+import { updateUserAuth } from '../helpers/fetchers';
 import {
   getCookie,
   destroyCookie,
-  setCookieAt,
-  setCookieRt,
+  setCookie,
 } from '../helpers/cookie';
 
 interface IContext {
-  Logout: () => Promise<void>;
-  email: string;
-  setEmail: Dispatch<SetStateAction<string>>;
+  logout: () => Promise<void>;
+  user: any;
+  setUser: Dispatch<SetStateAction<string>>;
 }
 
 interface IProvider {
   children: JSX.Element | JSX.Element[];
 }
 
-const jwt = new JWT();
-
 export const AuthContext = createContext({} as IContext);
 
-export function ResultsProvider({ children }: IProvider) {
-  const [email, setEmail] = useState('');
-  const [intervalKey, setIntervalKey] = useState<NodeJS.Timer>();
+export function AuthProvider({ children }: IProvider) {
+  const [user, setUser] = useState<any>();
   const { pathname, push } = useRouter();
-  const FiveMin = 1000 * 60 * 5;
+  const TEN_MIN = 1000 * 60 * 10;
 
-  const RefreshTokenFunction = useCallback(async () => {
-    const token = getCookie('tokenRt');
-    const { userId } = jwt.decode(token);
-    const { acessToken, refreshToken } = await fetchRefreshToken(
-      token,
-      userId,
-    );
-
-    if (refreshToken && acessToken) {
-      setCookieAt('tokenAt', acessToken);
-      setCookieRt('tokenRt', refreshToken);
-    } else {
-      destroyCookie('tokenRt');
-      destroyCookie('tokenAt');
-      return push('/login');
-    }
-  }, [push]);
-
-  async function Logout() {
-    destroyCookie('tokenAt');
-    destroyCookie('tokenRt');
-    setEmail('');
+  async function logout() {
+    destroyCookie('trybesocialUser');
+    setUser(null);
     push('/login');
-    await fetchLogout(email);
+  }
+
+  async function handleUpdateUserAuth(userParam?: any) {
+    try {
+      const { user: updatedUser } = await updateUserAuth(userParam || user)
+      if (!updatedUser) throw new Error('Acces Denied')
+      setUser(updatedUser)
+    } catch(err) {
+      await logout()
+    }
+  }
+
+  async function setInitalLoad(trybesocialUser: any) {
+    const storagedUser = JSON.parse(trybesocialUser)
+    await handleUpdateUserAuth(storagedUser)
+    push('/');
+
+    setInterval(handleUpdateUserAuth, TEN_MIN)
   }
 
   useEffect(() => {
-    const tokenRt = getCookie('tokenRt');
-    if (pathname !== '/login' && tokenRt && !intervalKey) {
-      const intervalId = setInterval(RefreshTokenFunction, FiveMin);
-      setIntervalKey(intervalId);
-    }
-    if (pathname === '/login') {
-      clearInterval(intervalKey as NodeJS.Timeout);
-    }
-  }, [pathname, FiveMin, RefreshTokenFunction, intervalKey]);
+    const authorizedPathNamesWithoutAuth = ['/login', '/signup'].includes(pathname)
+    const trybesocialUser = getCookie('trybesocialUser')
+    const storagedUser = trybesocialUser && JSON.parse(trybesocialUser)
+
+    if (!storagedUser && !authorizedPathNamesWithoutAuth) push('/login')
+    else if (storagedUser && !user) setInitalLoad(trybesocialUser)
+    else if (storagedUser && user && authorizedPathNamesWithoutAuth) push('/')
+
+  }, [pathname]);
+
+  useEffect(() => {
+    if (user) setCookie('trybesocialUser', JSON.stringify(user))
+  }, [user]);
 
   return (
     <AuthContext.Provider
       value={{
-        Logout,
-        email,
-        setEmail,
+        logout,
+        user,
+        setUser,
       }}
     >
       {children}

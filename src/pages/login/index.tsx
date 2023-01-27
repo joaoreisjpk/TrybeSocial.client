@@ -1,19 +1,12 @@
 import Head from 'next/head';
-import { useRouter } from 'next/router';
-import { GetServerSideProps } from 'next';
 import { useState } from 'react';
 import { Box, Container } from '@mui/material';
 import Header from '../../components/Header';
 import { useAuth } from '../../hooks/useAuth';
-import { fetchLogin, fetchRefreshToken } from '../../helpers/fetchers';
-import JWT, { decrypt, encrypt } from '../../helpers/Encrypt';
-import {
-  setCookieAt,
-  setCookieRt,
-  destroyCookie,
-  parseCookies,
-} from '../../helpers/cookie';
+import { fetchLogin } from '../../helpers/fetchers';
+import { encrypt } from '../../helpers/encrypt';
 import FormBuilder from '../../components/UI/FormBuilder';
+import { useRouter } from 'next/router';
 
 interface IUserInput {
   email: string;
@@ -32,32 +25,29 @@ function formValidation({ email, password }: IUserInput) {
   return response;
 }
 
-const jwt = new JWT();
-
 export default function Login() {
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const { setEmail } = useAuth();
+  const [isIncorrectPassowrd, setIsIncorrectPassowrd] = useState(false);
+  const { setUser } = useAuth();
+  const { push } = useRouter();
 
   const handleClick = async ({ email, password }: IUserInput) => {
     const body = JSON.stringify({
       email,
-      password: encrypt(password),
+      password: password ? encrypt(password) : password,
     });
 
     setIsLoading(true);
-    const { acessToken, refreshToken } = await fetchLogin(body);
-
-    if (acessToken && refreshToken) {
-      setCookieAt('tokenAt', acessToken);
-      setCookieRt('tokenRt', refreshToken);
-      const { email: jwtEmail } = jwt.decode(acessToken) as { email: string };
-      setEmail(jwtEmail);
-      router.push('/home');
-      setIsLoading(false);
-      return;
-    }
+    const { user } = await fetchLogin(body);
     setIsLoading(false);
+
+    if (!user) {
+      setIsIncorrectPassowrd(true)
+      return
+    }
+
+    setUser(user)
+    push('/')
   };
 
   const fieldProps = {
@@ -94,38 +84,8 @@ export default function Login() {
             formFields={fieldProps}
           />
         </Box>
+        {isIncorrectPassowrd && 'Senha Incorreta'}
       </Container>
     </div>
   );
 }
-
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { tokenRt: encryptRt } = parseCookies(ctx);
-  const tokenRt = decrypt(encryptRt);
-
-  if (tokenRt) {
-    const { userId } = jwt.verify(tokenRt);
-    const { acessToken, refreshToken } = await fetchRefreshToken(
-      tokenRt,
-      userId,
-    );
-
-    if (acessToken && refreshToken) {
-      setCookieAt('tokenAt', acessToken, ctx);
-
-      setCookieRt('tokenRt', refreshToken, ctx);
-      return {
-        props: {},
-        redirect: {
-          destination: '/home',
-          permanent: false,
-        },
-      };
-    }
-    destroyCookie('tokenRt', ctx);
-  }
-
-  return {
-    props: {},
-  };
-};

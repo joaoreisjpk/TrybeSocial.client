@@ -1,98 +1,103 @@
 import {
-  IJob, ILab, IUser, IuserTokenResponse,
+  IJob, ILab,
 } from './interfaces';
 
 const URL = process.env.NEXT_PUBLIC_URL || process.env.URL;
 
 export async function fetchLogin(body: string) {
   try {
-    return (await fetch(`${URL}/auth/signin`, {
+    const response = await fetch(`${URL}/auth/signin`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body,
-    }).then((data) => data.json())) as IuserTokenResponse;
+    })
+    return response.json();
   } catch (err) {
+    console.log(err)
     return {};
   }
 }
 
-export async function fetchRefreshToken(token: string, id: number) {
+export async function fetchSignUp(body: string) {
   try {
-    const tokenResponse = await fetch(`${URL}/auth/refresh/${id}`, {
+    return fetch(`${URL}/auth/signup`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        token,
+      },
+      body,
+    }).then((data) => data.json())
+  } catch(err) {
+    console.log(err)
+  }
+}
+
+export async function updateUserAuth({ accessToken, email }: any) {
+  try {
+    const tokenResponse = await fetch(`${URL}/auth/refresh/${email}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        token: accessToken,
       },
     });
-    return tokenResponse.json() as IuserTokenResponse;
+    return tokenResponse.json();
   } catch (err) {
+    console.log(err)
     return {};
   }
 }
 
-export async function fetchLogout(email: string) {
-  return fetch(`${URL}/auth/logout/${email}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-}
-
-export function getUser(email: string): Promise<IUser> {
-  return fetch(`${URL}/user/${email}/`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  }).then((data) => data.json());
-}
-
-export function listJobs(): Promise<IJob[]> {
+export function listJobs(token: string): Promise<IJob[]> {
   return fetch(`${URL}/jobs`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
+      token,
     },
   }).then((data) => data.json());
 }
 
-export async function createJob(body: IJob) {
+export async function createJob(body: IJob, token: string) {
   try {
     return (await fetch(`${URL}/jobs`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        token,
       },
       body: JSON.stringify(body),
-    }).then((data) => data.json())) as IuserTokenResponse;
+    }).then((data) => data.json()));
   } catch (err) {
+    console.log(err)
     return {};
   }
 }
 
-export function listLabs(): Promise<ILab[]> {
+export function listLabs(token: string): Promise<ILab[]> {
   return fetch(`${URL}/labs`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
+      token,
     },
   }).then((data) => data.json());
 }
 
-export async function createLab(body: ILab) {
+export async function createLab(body: ILab, token: string) {
   try {
     return (await fetch(`${URL}/labs`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        token,
       },
       body: JSON.stringify(body),
-    }).then((data) => data.json())) as IuserTokenResponse;
+    }).then((data) => data.json()));
   } catch (err) {
+    console.log(err)
     return {};
   }
 }

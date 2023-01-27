@@ -25,7 +25,7 @@ export default function FormBuilder({
             {...props}
             sx={{ width: '100%', height: '3.4rem', ...props?.sx }}
     >
-            {props.isLoading ? <CircularProgress /> : props.label}
+            {false ? <CircularProgress /> : props.label}
           </MUIButton>
         );
       default:
@@ -43,7 +43,7 @@ export default function FormBuilder({
         <Form>
           <Grid container spacing={formFields?.globalProps?.spacing || 2} alignItems="center" justifyContent="center">
             {formFields?.components?.map((data: any) => (
-              <Grid xs={2} {...formFields?.globalProps?.sizes} key={data.name}>
+              <Grid xs={2} {...formFields?.globalProps?.sizes} key={data.props.name}>
                 {loadComponent(data)}
               </Grid>
             ))}

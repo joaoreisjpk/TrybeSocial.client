@@ -1,31 +1,25 @@
-import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
 
-import { createLab, fetchRefreshToken, listLabs } from '../../helpers/fetchers';
-import JWT, { decrypt } from '../../helpers/Encrypt';
-import {
-  setCookieAt,
-  setCookieRt,
-  destroyCookie,
-  parseCookies,
-} from '../../helpers/cookie';
+import { createLab, listLabs } from '../../helpers/fetchers';
 import Header from '../../components/Header';
 import JobItem from '../../components/JobItem';
 import { IJob } from '../../helpers/interfaces';
 import TrybeModal from '../../components/TrybeModal';
 import MUIButton from '../../components/UI/MUIButton';
+import { useAuth } from '../../hooks/useAuth';
 
 export default function Labs() {
   const [LabsList, setLabsList] = useState<IJob[]>([]);
   const [isCreateLabModalOpen, setIsCreateLabModalOpen] = useState(false);
+  const { user } = useAuth();
 
   async function getLabsList() {
-    setLabsList(await listLabs());
+    setLabsList(await listLabs(user?.accessToken));
   }
 
   async function postNewLab() {
-    await createLab({ name: '#koeeee negada', link: 'https://www.youtube.com/?gl=BR&hl=pt' });
+    await createLab({ name: '#koeeee negada', link: 'https://www.youtube.com/?gl=BR&hl=pt' }, user?.accessToken);
     await getLabsList();
     setIsCreateLabModalOpen(false);
   }
@@ -33,6 +27,8 @@ export default function Labs() {
   useEffect(() => {
     getLabsList();
   }, []);
+
+  if (!user) return <div>Loading...</div>
 
   return (
     <div>
@@ -56,51 +52,3 @@ export default function Labs() {
     </div>
   );
 }
-
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { tokenAt: encryptAt, tokenRt: encryptRt } = parseCookies(ctx);
-  let tokenAt = decrypt(encryptAt);
-  const tokenRt = decrypt(encryptRt);
-
-  if (!tokenRt) {
-    destroyCookie('tokenAt', ctx);
-    return {
-      props: {},
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    };
-  }
-
-  const jwt = new JWT();
-
-  if (!tokenAt) {
-    const { userId } = jwt.decode(tokenRt);
-    const { acessToken, refreshToken } = await fetchRefreshToken(
-      tokenRt,
-      userId,
-    );
-
-    if (acessToken && refreshToken) {
-      tokenAt = acessToken;
-
-      setCookieAt('tokenAt', acessToken, ctx);
-
-      setCookieRt('tokenRt', refreshToken, ctx);
-    } else {
-      destroyCookie('tokenRt', ctx);
-      return {
-        props: {},
-        redirect: {
-          destination: '/login',
-          permanent: false,
-        },
-      };
-    }
-  }
-
-  return {
-    props: {},
-  };
-};
