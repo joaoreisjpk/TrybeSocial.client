@@ -29,7 +29,7 @@ export default function MainPage() {
 
   useEffect(() => {
     getJobList();
-  }, [getJobList]);
+  }, []);
 
   if (!user) return <div>Loading...</div>;
 

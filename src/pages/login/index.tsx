@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import Header from '../../components/Header';
 import { useAuth } from '../../hooks/useAuth';
 import { fetchLogin } from '../../helpers/fetchers';
-import { encrypt } from '../../helpers/encrypt';
+import { encrypt } from '../../helpers/crypt';
 import FormBuilder from '../../components/UI/FormBuilder';
 
 interface IUserInput {

@@ -4,7 +4,7 @@ import {
   parseCookies as allCookies,
   destroyCookie as destroyNookie,
 } from 'nookies';
-import { decrypt, encrypt } from './encrypt';
+import { decrypt, encrypt } from './crypt';
 
 export const setCookie = (
   name: string,
