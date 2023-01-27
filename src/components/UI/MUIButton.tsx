@@ -1,4 +1,4 @@
-import Button, { ButtonProps } from '@mui/material/Button';
+import { ButtonProps } from '@mui/material/Button';
 import LoadingButton from '@mui/lab/LoadingButton';
 
 interface IButton extends ButtonProps {
