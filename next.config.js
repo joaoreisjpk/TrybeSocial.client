@@ -3,7 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   env: {
     URL: "http://localhost:3333",
-    JWT_SECRET: "pacocapacoquinha"
+    JWT_SECRET: "pacocapacoquinha",
   }
 }
 
