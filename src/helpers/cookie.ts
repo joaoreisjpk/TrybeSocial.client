@@ -1,28 +1,23 @@
 import { GetServerSidePropsContext as GSSContext } from 'next';
 import {
-  setCookie,
+  setCookie as setNookies,
   parseCookies as allCookies,
   destroyCookie as destroyNookie,
 } from 'nookies';
-import { decrypt, encrypt } from './Encrypt';
+import { decrypt, encrypt } from './encrypt';
 
-export const setCookieAt = (
+export const setCookie = (
   name: string,
-  value: any,
-  context: GSSContext | undefined = undefined,
-) => setCookie(context, name, encrypt(value), { maxAge: 60 * 30 /* 30min */ });
-
-export const setCookieRt = (
-  name: string,
-  value: any,
-  context: GSSContext | undefined = undefined,
-) => setCookie(context, name, encrypt(value), {
-  maxAge: 60 * 60 * 24 * 7 /* 7d */,
-});
+  value: string,
+  time: number = 60 * 60 * 24 * 7, // 7days
+) => {
+  const encryptedValue = value && false ? encrypt(value) : value
+  setNookies(undefined, name, encryptedValue, { maxAge: time });
+}
 
 export const getCookie = (name: string) => {
-  const { [name]: cookie } = allCookies();
-  return decrypt(cookie);
+  const cookie = allCookies()[name];
+  return cookie && false ? decrypt(cookie) : cookie
 };
 
 export const destroyCookie = (name: string, context: GSSContext | undefined = undefined) => {

@@ -1,34 +1,28 @@
-import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
 
-import { createJob, fetchRefreshToken, listJobs } from '../../helpers/fetchers';
-import JWT, { decrypt } from '../../helpers/Encrypt';
-import {
-  setCookieAt,
-  setCookieRt,
-  destroyCookie,
-  parseCookies,
-} from '../../helpers/cookie';
+import { createJob, listJobs } from '../../helpers/fetchers';
 import Header from '../../components/Header';
 import JobItem from '../../components/JobItem';
 import { IJob } from '../../helpers/interfaces';
 import TrybeModal from '../../components/TrybeModal';
 import MUIButton from '../../components/UI/MUIButton';
+import { useAuth } from '../../hooks/useAuth';
 
 export default function MainPage() {
   const [jobsList, setJobsList] = useState<IJob[]>([]);
+  const { user } = useAuth();
   const [isCreateJobModalOpen, setIsCreateJobModalOpen] = useState(false);
 
   async function getJobList() {
-    setJobsList(await listJobs());
+    setJobsList(await listJobs(user?.accessToken));
   }
 
   async function postNewJob() {
     await createJob({
       name: '#vqv',
       link: 'https://www.youtube.com/?gl=BR&hl=pt',
-    });
+    }, user.accessToken);
     await getJobList();
     setIsCreateJobModalOpen(false);
   }
@@ -36,6 +30,8 @@ export default function MainPage() {
   useEffect(() => {
     getJobList();
   }, []);
+
+  if (!user) return <div>Loading...</div>
 
   return (
     <div>
@@ -62,51 +58,3 @@ export default function MainPage() {
     </div>
   );
 }
-
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { tokenAt: encryptAt, tokenRt: encryptRt } = parseCookies(ctx);
-  let tokenAt = decrypt(encryptAt);
-  const tokenRt = decrypt(encryptRt);
-
-  if (!tokenRt) {
-    destroyCookie('tokenAt', ctx);
-    return {
-      props: {},
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    };
-  }
-
-  const jwt = new JWT();
-
-  if (!tokenAt) {
-    const { userId } = jwt.decode(tokenRt);
-    const { acessToken, refreshToken } = await fetchRefreshToken(
-      tokenRt,
-      userId,
-    );
-
-    if (acessToken && refreshToken) {
-      tokenAt = acessToken;
-
-      setCookieAt('tokenAt', acessToken, ctx);
-
-      setCookieRt('tokenRt', refreshToken, ctx);
-    } else {
-      destroyCookie('tokenRt', ctx);
-      return {
-        props: {},
-        redirect: {
-          destination: '/login',
-          permanent: false,
-        },
-      };
-    }
-  }
-
-  return {
-    props: {},
-  };
-};

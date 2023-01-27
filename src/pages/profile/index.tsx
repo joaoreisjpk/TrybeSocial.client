@@ -1,16 +1,8 @@
-import { GetServerSideProps } from 'next';
 import Head from 'next/head';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment } from 'react';
 
 import Header from '../../components/Header';
-import { fetchRefreshToken, getUser } from '../../helpers/fetchers';
-import JWT, { decrypt } from '../../helpers/Encrypt';
-import {
-  setCookieAt,
-  setCookieRt,
-  destroyCookie,
-  parseCookies,
-} from '../../helpers/cookie';
+import { useAuth } from '../../hooks/useAuth';
 
 interface IUser {
   email: string
@@ -18,16 +10,10 @@ interface IUser {
   lastName: string
 }
 
-export default function MainPage({ email: propEmail }: { email: string}) {
-  const [user, setUser] = useState<null | IUser>(null);
+export default function MainPage() {
+  const { user } = useAuth();
 
-  async function fetchUser(email: string) {
-    setUser(await getUser(email));
-  }
-
-  useEffect(() => {
-    fetchUser(propEmail);
-  }, [propEmail]);
+  if (!user) return <div>Loading...</div>
 
   return (
     <div>
@@ -48,55 +34,3 @@ export default function MainPage({ email: propEmail }: { email: string}) {
     </div>
   );
 }
-
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { tokenAt: encryptAt, tokenRt: encryptRt } = parseCookies(ctx);
-  let tokenAt = decrypt(encryptAt);
-  const tokenRt = decrypt(encryptRt);
-
-  if (!tokenRt) {
-    destroyCookie('tokenAt', ctx);
-    return {
-      props: {},
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    };
-  }
-
-  const jwt = new JWT();
-
-  if (!tokenAt) {
-    const { userId } = jwt.decode(tokenRt);
-    const { acessToken, refreshToken } = await fetchRefreshToken(
-      tokenRt,
-      userId,
-    );
-
-    if (acessToken && refreshToken) {
-      tokenAt = acessToken;
-
-      setCookieAt('tokenAt', acessToken, ctx);
-
-      setCookieRt('tokenRt', refreshToken, ctx);
-    } else {
-      destroyCookie('tokenRt', ctx);
-      return {
-        props: {},
-        redirect: {
-          destination: '/login',
-          permanent: false,
-        },
-      };
-    }
-  }
-
-  const { email } = jwt.decode(tokenAt);
-
-  return {
-    props: {
-      email,
-    },
-  };
-};

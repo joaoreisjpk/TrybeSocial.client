@@ -5,6 +5,8 @@ import { useState } from 'react';
 
 import Header from '../../components/Header';
 import FormBuilder from '../../components/UI/FormBuilder';
+import { useAuth } from '../../hooks/useAuth';
+import { fetchSignUp } from '../../helpers/fetchers';
 
 interface ISignUpData {
   firstName: string;
@@ -45,26 +47,22 @@ function formValidation(signUpData: ISignUpData) {
 
 export default function Login() {
   const { push } = useRouter();
+  const { setUser } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleClick = async (submitData: ISignUpData) => {
-    const URL = process.env.NEXT_PUBLIC_URL || process.env.URL;
     const body = JSON.stringify(submitData);
 
     setIsLoading(true);
-    const response = (await fetch(`${URL}/auth/signup`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body,
-    }).then((data) => data.json())) as { acessToken: string } | any;
-
-    if (response.acessToken) {
-      push('/login');
-      return;
-    }
+    const { user } = (await fetchSignUp(body)) as any;
     setIsLoading(false);
 
-    alert('usuário já existe');
+    if (!user) {
+      alert('usuário já existe');
+      return
+    }
+    setUser(user)
+    push('/')
   };
 
   const initialValues = {

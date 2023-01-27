@@ -1,9 +1,9 @@
 import jwt from 'jsonwebtoken';
 import CryptoJS from 'crypto-js';
 
-type payloadType = { userId: number; email?: string };
+type payloadType = { email: string };
 
-const secret = process.env.JWT_SECRET || process.env.NEXT_PUBLIC_JWT_SECRET || '';
+const secret = process.env.NEXT_PUBLIC_JWT_SECRET || process.env.JWT_SECRET || '';
 
 export default class JWT {
   private secret: string;
@@ -24,15 +24,22 @@ export default class JWT {
   }
 
   decode(token: string) {
-    console.log('koe');
     return jwt.decode(token) as payloadType;
   }
 }
 
 // Decrypt
 export const decrypt = (message: string) => {
-  const bytes = CryptoJS.AES.decrypt(message || '', secret);
+  if (!message) {
+    throw new Error('empty message')
+  }
+  const bytes = CryptoJS.AES.decrypt(message, secret);
   return bytes.toString(CryptoJS.enc.Utf8);
 };
 // Encrypt
-export const encrypt = (message: string) => CryptoJS.AES.encrypt(message, secret).toString();
+export const encrypt = (message: string) => {
+  if (!message) {
+    throw new Error('empty message')
+  }
+  return CryptoJS.AES.encrypt(message, secret).toString();
+}

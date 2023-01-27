@@ -7,16 +7,16 @@ import MUIButton from './UI/MUIButton';
 
 export default function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const { Logout } = useAuth();
+  const { logout } = useAuth();
   const { pathname } = useRouter();
 
   useEffect(() => {
-    const loginPaths = ['/cadastro', '/login'];
+    const loginPaths = ['/signup', '/login'];
     setIsLoggedIn(!loginPaths.includes(pathname));
   }, [pathname]);
 
   const handleClick = async () => {
-    await Logout();
+    await logout();
   };
 
   return (
@@ -42,13 +42,13 @@ export default function Header() {
                 onClick={handleClick}
                 size="large"
               >
-                Logout
+                logout
               </MUIButton>
             </Fragment>
           ) : (
             <Fragment>
               <Link href='/login'>Login</Link>
-              <Link href='/cadastro'>Cadastrar</Link>
+              <Link href='/signup'>Cadastrar</Link>
             </Fragment>
           )}
         </Box>
