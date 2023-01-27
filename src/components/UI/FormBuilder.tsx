@@ -1,4 +1,4 @@
-import { Checkbox, CircularProgress, FormControlLabel } from '@mui/material';
+import { Checkbox, FormControlLabel } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import { Form, Formik } from 'formik';
 import MUIButton from './MUIButton';
@@ -25,7 +25,7 @@ export default function FormBuilder({
             {...props}
             sx={{ width: '100%', height: '3.4rem', ...props?.sx }}
     >
-            {false ? <CircularProgress /> : props.label}
+            {props.label}
           </MUIButton>
         );
       default:

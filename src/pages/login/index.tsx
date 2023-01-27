@@ -1,12 +1,12 @@
 import Head from 'next/head';
 import { useState } from 'react';
 import { Box, Container } from '@mui/material';
+import { useRouter } from 'next/router';
 import Header from '../../components/Header';
 import { useAuth } from '../../hooks/useAuth';
 import { fetchLogin } from '../../helpers/fetchers';
 import { encrypt } from '../../helpers/encrypt';
 import FormBuilder from '../../components/UI/FormBuilder';
-import { useRouter } from 'next/router';
 
 interface IUserInput {
   email: string;
@@ -42,12 +42,12 @@ export default function Login() {
     setIsLoading(false);
 
     if (!user) {
-      setIsIncorrectPassowrd(true)
-      return
+      setIsIncorrectPassowrd(true);
+      return;
     }
 
-    setUser(user)
-    push('/')
+    setUser(user);
+    push('/');
   };
 
   const fieldProps = {
