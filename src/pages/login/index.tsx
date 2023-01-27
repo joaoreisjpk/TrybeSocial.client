@@ -6,7 +6,7 @@ import Header from '../../components/Header';
 import { useAuth } from '../../hooks/useAuth';
 import { fetchLogin } from '../../helpers/fetchers';
 import { encrypt } from '../../helpers/crypt';
-import FormBuilder from '../../components/UI/FormBuilder';
+import FormBuilder from '../../components/FormBuilder';
 
 interface IUserInput {
   email: string;
@@ -28,8 +28,9 @@ function formValidation({ email, password }: IUserInput) {
 export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const [isIncorrectPassowrd, setIsIncorrectPassowrd] = useState(false);
-  const { setUser } = useAuth();
+  const { setUser, handleUpdateUserAuth } = useAuth();
   const { push } = useRouter();
+  const TEN_MIN = 1000 * 60 * 10;
 
   const handleClick = async ({ email, password }: IUserInput) => {
     const body = JSON.stringify({
@@ -47,6 +48,7 @@ export default function Login() {
     }
 
     setUser(user);
+    setTimeout(() => handleUpdateUserAuth(user), TEN_MIN);
     push('/');
   };
 
@@ -58,8 +60,10 @@ export default function Login() {
       { props: { name: 'email', label: 'E-mail' } },
       { props: { name: 'password', type: 'password', label: 'Senha' } },
       {
-        type: 'submitBtn',
-        props: { name: 'login', label: 'Entrar', isLoading },
+        type: 'btn',
+        props: {
+          type: 'submit', name: 'login', label: 'Entrar', isLoading,
+        },
       },
     ],
   };
@@ -79,7 +83,7 @@ export default function Login() {
         <Box maxWidth={'350px'}>
           <FormBuilder
             initialValues={{ email: '', password: '' }}
-            validate={formValidation}
+            formValidation={formValidation}
             onSubmit={handleClick}
             formFields={fieldProps}
           />

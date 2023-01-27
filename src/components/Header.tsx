@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { Box, Typography } from '@mui/material';
+import { Box, Container, Typography } from '@mui/material';
 import Link from './Link';
 import { useAuth } from '../hooks/useAuth';
 import MUIButton from './UI/MUIButton';
@@ -21,19 +21,14 @@ export default function Header() {
 
   return (
     <Box bgcolor='#eee' mb='1rem' display='flex' justifyContent='center'>
-      <Box
-        display='flex'
-        justifyContent='space-between'
-        alignItems='center'
-        width='90%'
-      >
+      <Container maxWidth="xl" sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Typography variant='h5' fontWeight={600}>
           TrybeSocial
         </Typography>
-        <Box m={'1rem'}>
+        <Box my="1rem">
           {isLoggedIn ? (
             <Fragment>
-              <Link href='/home'>Home</Link>
+              <Link href='/jobs'>Vagas</Link>
               <Link href='/profile'>Perfil</Link>
               <Link href='/labs'>Labs</Link>
               <MUIButton
@@ -52,7 +47,7 @@ export default function Header() {
             </Fragment>
           )}
         </Box>
-      </Box>
+      </Container>
     </Box>
   );
 }

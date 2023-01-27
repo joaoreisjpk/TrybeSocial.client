@@ -1,12 +1,33 @@
-import Link from 'next/link';
-import React, { Fragment } from 'react';
+import React from 'react';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
+import { CardActionArea, CardActions } from '@mui/material';
+import Link from '@mui/material/Link';
 import { IJob } from '../helpers/interfaces';
+import MUIButton from './UI/MUIButton';
 
 export default function JobItem({ data }: {data:IJob}) {
   return (
-    <Fragment>
-      <div>{data.name}</div>
-      <Link passHref href={data.link}><a href="#" target="_blank">Link</a></Link>
-    </Fragment>
+    <Card sx={{ minWidth: 400 }}>
+      <CardActionArea>
+        <CardContent>
+          <Typography gutterBottom variant="h4" component="div">
+            {data.title}
+
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {data.description}
+          </Typography>
+        </CardContent>
+      </CardActionArea>
+      <CardActions>
+        <MUIButton size="small">
+          <Link target="_blank" underline='none' href={data.link} color='#000' rel="noreferrer">
+            Visitar a página
+          </Link>
+        </MUIButton>
+      </CardActions>
+    </Card>
   );
 }

@@ -19,6 +19,8 @@ interface IContext {
   logout: () => Promise<void>;
   user: any;
   setUser: Dispatch<SetStateAction<string>>;
+  // eslint-disable-next-line no-unused-vars
+  handleUpdateUserAuth: (user: any) => void
 }
 
 interface IProvider {
@@ -40,35 +42,34 @@ export function AuthProvider({ children }: IProvider) {
 
   async function handleUpdateUserAuth(userParam?: any) {
     try {
-      const { user: updatedUser } = await updateUserAuth(userParam || user)
-      if (!updatedUser) throw new Error('Acces Denied')
-      setUser(updatedUser)
-    } catch(err) {
-      await logout()
+      const { user: updatedUser } = await updateUserAuth(userParam || user);
+      if (!updatedUser) throw new Error('Acces Denied');
+      setUser(updatedUser);
+      setTimeout(() => handleUpdateUserAuth(updatedUser), TEN_MIN);
+    } catch (err) {
+      console.log(err);
+      await logout();
     }
   }
 
   async function setInitalLoad(trybesocialUser: any) {
-    const storagedUser = JSON.parse(trybesocialUser)
-    await handleUpdateUserAuth(storagedUser)
+    const storagedUser = JSON.parse(trybesocialUser);
+    await handleUpdateUserAuth(storagedUser);
     push('/');
-
-    setInterval(handleUpdateUserAuth, TEN_MIN)
   }
 
   useEffect(() => {
-    const authorizedPathNamesWithoutAuth = ['/login', '/signup'].includes(pathname)
-    const trybesocialUser = getCookie('trybesocialUser')
-    const storagedUser = trybesocialUser && JSON.parse(trybesocialUser)
+    const authorizedPathNamesWithoutAuth = ['/login', '/signup'].includes(pathname);
+    const trybesocialUser = getCookie('trybesocialUser');
+    const storagedUser = trybesocialUser && JSON.parse(trybesocialUser);
 
-    if (!storagedUser && !authorizedPathNamesWithoutAuth) push('/login')
-    else if (storagedUser && !user) setInitalLoad(trybesocialUser)
-    else if (storagedUser && user && authorizedPathNamesWithoutAuth) push('/')
-
+    if (!storagedUser && !authorizedPathNamesWithoutAuth) push('/login');
+    else if (storagedUser && !user) setInitalLoad(trybesocialUser);
+    else if (storagedUser && user && authorizedPathNamesWithoutAuth) push('/');
   }, [pathname]);
 
   useEffect(() => {
-    if (user) setCookie('trybesocialUser', JSON.stringify(user))
+    if (user) setCookie('trybesocialUser', JSON.stringify(user));
   }, [user]);
 
   return (
@@ -77,6 +78,7 @@ export function AuthProvider({ children }: IProvider) {
         logout,
         user,
         setUser,
+        handleUpdateUserAuth,
       }}
     >
       {children}

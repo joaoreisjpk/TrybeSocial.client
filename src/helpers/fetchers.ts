@@ -12,10 +12,10 @@ export async function fetchLogin(body: string) {
         'Content-Type': 'application/json',
       },
       body,
-    })
+    });
     return response.json();
   } catch (err) {
-    console.log(err)
+    console.log(err);
     return {};
   }
 }
@@ -28,9 +28,10 @@ export async function fetchSignUp(body: string) {
         'Content-Type': 'application/json',
       },
       body,
-    }).then((data) => data.json())
-  } catch(err) {
-    console.log(err)
+    }).then((data) => data.json());
+  } catch (err) {
+    console.log(err);
+    return {};
   }
 }
 
@@ -45,7 +46,7 @@ export async function updateUserAuth({ accessToken, email }: any) {
     });
     return tokenResponse.json();
   } catch (err) {
-    console.log(err)
+    console.log(err);
     return {};
   }
 }
@@ -71,7 +72,7 @@ export async function createJob(body: IJob, token: string) {
       body: JSON.stringify(body),
     }).then((data) => data.json()));
   } catch (err) {
-    console.log(err)
+    console.log(err);
     return {};
   }
 }
@@ -97,7 +98,7 @@ export async function createLab(body: ILab, token: string) {
       body: JSON.stringify(body),
     }).then((data) => data.json()));
   } catch (err) {
-    console.log(err)
+    console.log(err);
     return {};
   }
 }

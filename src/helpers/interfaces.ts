@@ -10,11 +10,13 @@ export interface IUser {
 }
 
 export interface IJob {
-  name: string
+  title: string
+  description: string
   link: string
 }
 
 export interface ILab {
-  name: string
+  title: string
+  description: string
   link: string
 }

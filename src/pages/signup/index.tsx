@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 
 import Header from '../../components/Header';
-import FormBuilder from '../../components/UI/FormBuilder';
+import FormBuilder from '../../components/FormBuilder';
 import { useAuth } from '../../hooks/useAuth';
 import { fetchSignUp } from '../../helpers/fetchers';
 
@@ -83,31 +83,19 @@ export default function Login() {
       },
     },
     components: [
-      {
-        props: { name: 'firstName', label: 'Nome' },
-      },
-      {
-        props: { name: 'lastName', label: 'Sobrenome' },
-      },
-      {
-        props: { name: 'email', label: 'E-mail' },
-      },
-      {
-        props: { name: 'trybe', label: 'Tribo' },
-      },
-      {
-        props: { name: 'password', label: 'Senha', type: 'password' },
-      },
-      {
-        props: { name: 'confirmPassword', label: 'Confirmar a Senha', type: 'password' },
-      },
+      { props: { name: 'firstName', label: 'Nome' } },
+      { props: { name: 'lastName', label: 'Sobrenome' } },
+      { props: { name: 'email', label: 'E-mail' } },
+      { props: { name: 'trybe', label: 'Tribo' } },
+      { props: { name: 'password', label: 'Senha', type: 'password' } },
+      { props: { name: 'confirmPassword', label: 'Confirmar a Senha', type: 'password' } },
       {
         type: 'checkbox',
         props: { name: 'terms', label: 'Aceitar os Termos' },
       },
       {
-        type: 'submitBtn',
-        props: { label: 'Login', isLoading },
+        type: 'btn',
+        props: { type: 'submit', label: 'Login', isLoading },
       },
     ],
   };
