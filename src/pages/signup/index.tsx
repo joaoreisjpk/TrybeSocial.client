@@ -59,10 +59,10 @@ export default function Login() {
 
     if (!user) {
       alert('usuário já existe');
-      return
+      return;
     }
-    setUser(user)
-    push('/')
+    setUser(user);
+    push('/');
   };
 
   const initialValues = {

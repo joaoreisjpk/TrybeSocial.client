@@ -26,9 +26,9 @@ export default function Labs() {
 
   useEffect(() => {
     getLabsList();
-  }, []);
+  }, [getLabsList]);
 
-  if (!user) return <div>Loading...</div>
+  if (!user) return <div>Loading...</div>;
 
   return (
     <div>

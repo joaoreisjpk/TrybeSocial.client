@@ -25,7 +25,7 @@ export default function FormBuilder({
             {...props}
             sx={{ width: '100%', height: '3.4rem', ...props?.sx }}
     >
-            {false ? <CircularProgress /> : props.label}
+            {props.label}
           </MUIButton>
         );
       default:

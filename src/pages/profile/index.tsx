@@ -4,16 +4,10 @@ import { Fragment } from 'react';
 import Header from '../../components/Header';
 import { useAuth } from '../../hooks/useAuth';
 
-interface IUser {
-  email: string
-  firstName: string
-  lastName: string
-}
-
 export default function MainPage() {
   const { user } = useAuth();
 
-  if (!user) return <div>Loading...</div>
+  if (!user) return <div>Loading...</div>;
 
   return (
     <div>
