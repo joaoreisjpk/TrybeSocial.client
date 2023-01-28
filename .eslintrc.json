@@ -23,5 +23,9 @@
         "jsx": "never"
       }
     ]
+  },
+  "globals": {
+    "React": true,
+    "JSX": true
   }
 }

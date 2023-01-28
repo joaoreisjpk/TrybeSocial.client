@@ -1,8 +1,8 @@
 import { Checkbox, FormControlLabel } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import { Form, Formik } from 'formik';
-import MUIButton from './MUIButton';
-import MUInput from './MUInput';
+import MUIButton from './UI/MUIButton';
+import MUInput from './UI/MUInput';
 
 export default function FormBuilder({
   initialValues, onSubmit, formValidation, formFields,
@@ -14,17 +14,16 @@ export default function FormBuilder({
           <FormControlLabel control={<Checkbox name={props.name} />} {...props} />
         );
 
-      case 'submitBtn':
+      case 'btn':
         return (
           <MUIButton
-            type='submit'
             variant='contained'
             size='large'
             disabled={props.disabled}
             bgColor='#44b365'
             {...props}
             sx={{ width: '100%', height: '3.4rem', ...props?.sx }}
-    >
+          >
             {props.label}
           </MUIButton>
         );
@@ -42,8 +41,12 @@ export default function FormBuilder({
       {() => (
         <Form>
           <Grid container spacing={formFields?.globalProps?.spacing || 2} alignItems="center" justifyContent="center">
-            {formFields?.components?.map((data: any) => (
-              <Grid xs={2} {...formFields?.globalProps?.sizes} key={data.props.name}>
+            {formFields?.components?.map((data: any, index: number) => (
+              <Grid xs={2}
+                {...formFields?.globalProps?.sizes}
+                {...data.sizes}
+                key={String(data) + index}
+              >
                 {loadComponent(data)}
               </Grid>
             ))}

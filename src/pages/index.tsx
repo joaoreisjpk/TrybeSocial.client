@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 const Home: NextPage = () => {
   const { push } = useRouter();
   useEffect(() => {
-    push('/home');
+    push('/jobs');
   }, [push]);
 
   return (

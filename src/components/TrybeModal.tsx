@@ -1,16 +1,23 @@
 import { Dispatch, SetStateAction } from 'react';
-import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import FormBuilder from './FormBuilder';
+
+interface ModalField {
+  title: string
+  description: string
+  link: string
+}
 
 interface ModalProps {
   title: string;
-  body: string;
-  onSubmit: () => void;
+  // eslint-disable-next-line no-unused-vars
+  onSubmit: (props: ModalField) => void;
+  formFields: any
   show: boolean;
+  initialValues: any;
+  formValidation: any;
   setShow: Dispatch<SetStateAction<boolean>>;
 }
 
@@ -23,16 +30,27 @@ export default function TrybeModal(props: ModalProps) {
     props.setShow(false);
   }
 
+  const formFields = {
+    ...props.formFields,
+    components: [...props.formFields.components, {
+      type: 'btn',
+      props: { label: 'Cancelar', isLoading: false, onClick: closeDialog },
+      sizes: { xs: 12, sm: 6 },
+    }],
+  };
+
   return (
-    <Dialog open={props.show} onBlur={closeDialog}>
-      <DialogTitle>{props.title}</DialogTitle>
+    <Dialog open={props.show}>
+      <DialogTitle sx={{ fontSize: '2.5rem' }}>{props.title}</DialogTitle>
       <DialogContent>
-        <DialogContentText>{props.body}</DialogContentText>
+        <FormBuilder
+          initialValues={props.initialValues}
+          formValidation={props.formValidation}
+          formFields={formFields}
+          onSubmit={props.onSubmit}
+          isLoading={false}
+        />
       </DialogContent>
-      <DialogActions>
-        <Button onClick={closeDialog}>Cancelar</Button>
-        <Button onClick={props.onSubmit}>Criar Vaga</Button>
-      </DialogActions>
     </Dialog>
   );
 }
