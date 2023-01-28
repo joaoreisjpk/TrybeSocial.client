@@ -16,14 +16,14 @@ export default function JobItem({ data }: {data:IJob}) {
             {data.title}
 
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="h6" fontSize={18} color="text.secondary">
             {data.description}
           </Typography>
         </CardContent>
       </CardActionArea>
       <CardActions>
         <MUIButton size="small">
-          <Link target="_blank" underline='none' href={data.link} color='#000' rel="noreferrer">
+          <Link target="_blank" fontSize={20} underline='none' href={data.link} color='#000' rel="noreferrer">
             Visitar a página
           </Link>
         </MUIButton>
