@@ -9,11 +9,15 @@ import MUIButton from './UI/MUIButton';
 
 export default function JobItem({ data }: {data: ILab}) {
   return (
-    <Card sx={{ minWidth: 400, display: 'flex', flexDirection: 'column' }}>
-      <CardContent>
-        <Typography gutterBottom variant="h4" component="div">
+    <Card sx={{
+      minWidth: 400, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+    }}>
+      <CardContent sx={{ pb: 0 }}>
+        <Typography gutterBottom variant="h4" mb="0">
           {data.title}
         </Typography>
+      </CardContent>
+      <CardContent>
         <Typography variant="h6" fontSize={18} color="text.secondary">
           {data.description}
         </Typography>
@@ -21,7 +25,7 @@ export default function JobItem({ data }: {data: ILab}) {
           Número de Contato: {data.contactNumber}
         </Typography>
       </CardContent>
-      <CardActions sx={{ mt: 'auto' }}>
+      <CardActions>
         <MUIButton size="small">
           <Link target="_blank" fontSize={20} underline='none' href={data.repositoryLink} color='#000' rel="noreferrer">
             Visitar Repositório

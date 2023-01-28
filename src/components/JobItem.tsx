@@ -9,11 +9,15 @@ import MUIButton from './UI/MUIButton';
 
 export default function JobItem({ data }: {data: IJob}) {
   return (
-    <Card sx={{ minWidth: 400, display: 'flex', flexDirection: 'column' }}>
-      <CardContent>
-        <Typography gutterBottom variant="h4" component="div">
+    <Card sx={{
+      minWidth: 400, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+    }}>
+      <CardContent sx={{ pb: 0 }}>
+        <Typography gutterBottom variant="h4" mb="0">
           {data.title}
         </Typography>
+      </CardContent>
+      <CardContent>
         <Typography variant="h6" fontSize={18} color="text.secondary">
           {data.description}
         </Typography>
