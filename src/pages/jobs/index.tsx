@@ -38,7 +38,7 @@ export default function MainPage() {
 
   useEffect(() => {
     getJobList();
-  }, []);
+  }, [user]);
 
   if (!user) return <div>Loading...</div>;
 
@@ -93,12 +93,12 @@ export default function MainPage() {
         <Box display="flex" justifyContent="space-between">
           <h1>Vagas</h1>
           <MUIButton onClick={() => setIsCreateJobModalOpen(true)}>
-            Criar nova Vaga
+            Adicionar nova Vaga
           </MUIButton>{' '}
         </Box>
         <Grid container spacing={3}>
           {Array.isArray(jobsList) && jobsList.map((data, index) => (
-            <Grid xs={12} lg={6} key={String(data) + index}>
+            <Grid xs={12} lg={6} key={JSON.stringify(data) + index}>
               <JobItem data={data} />
             </Grid>
           ))}
@@ -106,7 +106,7 @@ export default function MainPage() {
       </Container>
 
       <TrybeModal
-        title='Criar nova Vaga'
+        title='Adicionar nova Vaga'
         onSubmit={postNewJob}
         initialValues={initialValues}
         formValidation={formValidation}

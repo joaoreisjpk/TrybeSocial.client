@@ -29,6 +29,8 @@ interface IProvider {
 
 export const AuthContext = createContext({} as IContext);
 
+const loginPaths = ['/login', '/signup'];
+
 export function AuthProvider({ children }: IProvider) {
   const [user, setUser] = useState<any>();
   const { pathname, push } = useRouter();
@@ -55,11 +57,11 @@ export function AuthProvider({ children }: IProvider) {
   async function setInitalLoad(trybesocialUser: any) {
     const storagedUser = JSON.parse(trybesocialUser);
     await handleUpdateUserAuth(storagedUser);
-    push('/');
+    if (loginPaths.includes(pathname)) push('/');
   }
 
   useEffect(() => {
-    const authorizedPathNamesWithoutAuth = ['/login', '/signup'].includes(pathname);
+    const authorizedPathNamesWithoutAuth = loginPaths.includes(pathname);
     const trybesocialUser = getCookie('trybesocialUser');
     const storagedUser = trybesocialUser && JSON.parse(trybesocialUser);
 

@@ -18,5 +18,7 @@ export interface IJob {
 export interface ILab {
   title: string
   description: string
-  link: string
+  repositoryLink: string
+  contactLink: string
+  contactNumber: string
 }

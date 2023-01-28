@@ -1,38 +1,34 @@
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
 
+import { Box, Container } from '@mui/material';
+import Grid from '@mui/material/Unstable_Grid2';
 import { createLab, listLabs } from '../../helpers/fetchers';
 import Header from '../../components/Header';
-import JobItem from '../../components/JobItem';
-import { IJob } from '../../helpers/interfaces';
+import LabItem from '../../components/LabItem';
+import { ILab } from '../../helpers/interfaces';
 import TrybeModal from '../../components/TrybeModal';
 import MUIButton from '../../components/UI/MUIButton';
 import { useAuth } from '../../hooks/useAuth';
 
-interface ModalField {
-  title: string
-  description: string
-  link: string
-}
-
 export default function Labs() {
-  const [LabsList, setLabsList] = useState<IJob[]>([]);
+  const [labList, setLabList] = useState<ILab[]>([]);
   const [isCreateLabModalOpen, setIsCreateLabModalOpen] = useState(false);
   const { user } = useAuth();
 
   async function getLabsList() {
-    setLabsList(await listLabs(user?.accessToken));
+    setLabList(await listLabs(user?.accessToken));
   }
 
-  async function postNewLab({ title, link, description }: any) {
-    await createLab({ title, description, link }, user?.accessToken);
+  async function postNewLab(params: ILab) {
+    await createLab(params, user?.accessToken);
     await getLabsList();
     setIsCreateLabModalOpen(false);
   }
 
   useEffect(() => {
     getLabsList();
-  }, []);
+  }, [user]);
 
   const formFields = {
     globalProps: {
@@ -41,18 +37,20 @@ export default function Labs() {
     components: [
       { props: { name: 'title', label: 'Título' } },
       { props: { name: 'description', label: 'Descrição' } },
-      { props: { name: 'link', label: 'Link da vaga' } },
+      { props: { name: 'repositoryLink', label: 'Link do Repositório' } },
+      { props: { name: 'contactLink', label: 'Link para contato (Linkedin, Instagram...)' } },
+      { props: { name: 'contactNumber', label: 'Contato de Celular (Optional)' } },
       {
         type: 'btn',
         props: {
-          label: 'Criar Vaga', isLoading: false, type: 'submit',
+          label: 'Criar Laboratório', isLoading: false, type: 'submit',
         },
         sizes: { xs: 12, sm: 6 },
       },
     ],
   };
 
-  function formValidation(signUpData: ModalField) {
+  function formValidation(signUpData: ILab) {
     const response = {} as any;
     if (signUpData.title.length < 10) {
       response.title = 'O Título precisa de pelo menos 10 caracteres';
@@ -60,8 +58,11 @@ export default function Labs() {
     if (signUpData.description.length < 10) {
       response.description = 'Por favor, descorra uma pequena descrição';
     }
-    if (!signUpData.link?.length) {
-      response.link = 'O link é obrigatório';
+    if (!signUpData.repositoryLink?.length) {
+      response.repositoryLink = 'O link do repositório é obrigatório';
+    }
+    if (!signUpData.contactLink?.length) {
+      response.contactLink = 'O link para contato é obrigatório';
     }
 
     return response;
@@ -70,7 +71,9 @@ export default function Labs() {
   const initialValues = {
     title: '',
     description: '',
-    link: '',
+    repositoryLink: '',
+    contactLink: '',
+    contactNumber: '',
   };
 
   if (!user) return <div>Loading...</div>;
@@ -83,14 +86,23 @@ export default function Labs() {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <Header />
-      <h1>Labs</h1>
-      <MUIButton onClick={() => setIsCreateLabModalOpen(true)}>Criar novo Lab</MUIButton>{' '}
+      <Container maxWidth="xl">
+        <Box display="flex" justifyContent="space-between">
+          <h1>Laboratórios</h1>
+          <MUIButton onClick={() => setIsCreateLabModalOpen(true)}>Adicionar novo Lab</MUIButton>{' '}
+        </Box>
 
-      {Array.isArray(LabsList) && LabsList.map(
-        (data, index) => <JobItem data={data} key={JSON.stringify(data) + index}/>,
-      )}
+        <Grid container spacing={3}>
+          {Array.isArray(labList) && labList.map((data, index) => (
+            <Grid xs={12} xl={6} key={JSON.stringify(data) + index}>
+              <LabItem data={data} />
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
+
       <TrybeModal
-        title='Criar nova Lab'
+        title='Adicionar novo Laboratório'
         onSubmit={postNewLab}
         show={isCreateLabModalOpen}
         setShow={setIsCreateLabModalOpen}
