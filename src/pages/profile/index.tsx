@@ -1,3 +1,4 @@
+import Container from '@mui/material/Container';
 import Head from 'next/head';
 import { Fragment } from 'react';
 
@@ -17,14 +18,18 @@ export default function MainPage() {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <Header />
-      <h1>Perfil</h1>
-      {user && (
-        <Fragment>
-          <h2>Email: {user?.email}</h2>
-          <h2>Nome: {user?.firstName}</h2>
-          <h2>Sobrenome: {user?.lastName}</h2>
-        </Fragment>
-      )}
+      <Container maxWidth="xl">
+        <h1>Perfil</h1>
+        {user && (
+          <Fragment>
+            <div>
+              <h2>Email: {user?.email}</h2>
+              <h2>Nome: {user?.firstName}</h2>
+              <h2>Sobrenome: {user?.lastName}</h2>
+            </div>
+          </Fragment>
+        )}
+      </Container>
     </div>
   );
 }

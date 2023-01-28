@@ -4,16 +4,10 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import FormBuilder from './FormBuilder';
 
-interface ModalField {
-  title: string
-  description: string
-  link: string
-}
-
 interface ModalProps {
   title: string;
   // eslint-disable-next-line no-unused-vars
-  onSubmit: (props: ModalField) => void;
+  onSubmit: (props: any) => void;
   formFields: any
   show: boolean;
   initialValues: any;
@@ -34,7 +28,9 @@ export default function TrybeModal(props: ModalProps) {
     ...props.formFields,
     components: [...props.formFields.components, {
       type: 'btn',
-      props: { label: 'Cancelar', isLoading: false, onClick: closeDialog },
+      props: {
+        label: 'Cancelar', isLoading: false, onClick: closeDialog, bgColor: '#C0433D',
+      },
       sizes: { xs: 12, sm: 6 },
     }],
   };

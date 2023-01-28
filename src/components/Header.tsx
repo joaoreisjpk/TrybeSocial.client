@@ -30,7 +30,7 @@ export default function Header() {
             <Fragment>
               <Link href='/jobs'>Vagas</Link>
               <Link href='/profile'>Perfil</Link>
-              <Link href='/labs'>Labs</Link>
+              <Link href='/labs'>Laboratórios</Link>
               <MUIButton
                 bgColor='black'
                 sx={{ color: 'white', padding: '.4rem 1rem', marginLeft: '1rem' }}
