@@ -27,13 +27,13 @@ export default function MainPage() {
   }
 
   async function postNewJob({ title, description, link }: any) {
+    setIsCreateJobModalOpen(false);
     await createJob({
       title,
       description,
       link,
     }, user.accessToken);
     await getJobList();
-    setIsCreateJobModalOpen(false);
   }
 
   useEffect(() => {

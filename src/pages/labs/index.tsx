@@ -21,9 +21,9 @@ export default function Labs() {
   }
 
   async function postNewLab(params: ILab) {
+    setIsCreateLabModalOpen(false);
     await createLab(params, user?.accessToken);
     await getLabsList();
-    setIsCreateLabModalOpen(false);
   }
 
   useEffect(() => {
