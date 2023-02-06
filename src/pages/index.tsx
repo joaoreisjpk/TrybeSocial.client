@@ -16,6 +16,7 @@ const Home: NextPage = () => {
         <meta name='description' content='Rede social focada nos trybers! Venha auxiliar nesse projeto super desafiador que é criar uma rede social, lá você terá liberdade de adicionar as fetures que quiser, desde que siga o padrão de código!' />
         <link rel='icon' href='/favicon.ico' />
       </Head>
+
     </div>
   );
 };
