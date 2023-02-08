@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import { useState } from 'react';
-import { Box, Container } from '@mui/material';
+import { Box, Container, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
 import Header from '../../components/Header';
 import { useAuth } from '../../hooks/useAuth';
@@ -79,6 +79,12 @@ export default function Login() {
       <Container>
         <Box my={5}>
           <h1>Faça seu Login</h1>
+          <Typography sx={{ fontSize: '3rem', color: 'red' }}>
+            O site está inativo porque a amazon é uma sovina desgraçada que só pensa em dinheiro
+          </Typography>
+          <Typography sx={{ fontSize: '3rem', color: 'blue' }}>
+            quando conseguir estancar a sangria ponho no ar novamente
+          </Typography>
         </Box>
         <Box maxWidth={'350px'}>
           <FormBuilder
