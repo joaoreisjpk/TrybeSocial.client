@@ -41,7 +41,6 @@ export default function SocketProvider({
     if (!socketConnection.hasListeners('receive_message')) {
       socketConnection.on('receive_message', (data) => setRoomUsers(data));
     }
-    console.log('socket', socket);
     setSocket(socketConnection);
   }, []);
 

@@ -5,7 +5,7 @@ import { IoMdSend } from 'react-icons/io';
 import Picker from 'emoji-picker-react';
 import { useSocket } from '../../contexts/SocketContext';
 
-function ChatFooter({ roomId }: { roomId: string }) {
+function ChatFooter({ from, to }: {from: string, to: string}) {
   const [message, setMessage] = useState<string>('');
   const { socket } = useSocket();
   const username = 'João';
@@ -21,13 +21,12 @@ function ChatFooter({ roomId }: { roomId: string }) {
   const handleSendMessage = (e: any, message: string) => {
     e.preventDefault();
     if (message.trim()) {
-      console.log('message sent');
-      socket?.emit('send_message', {
-        text: message,
+      socket?.emit('sendMessage', {
+        message,
         name: username,
+        from,
+        to,
         time: new Date(),
-        socketId: socket.id,
-        roomId,
       });
     }
     setMessage('');
@@ -69,7 +68,8 @@ function ChatFooter({ roomId }: { roomId: string }) {
             placeholder="Aa"
             onKeyUp={handleTyping}
             onChange={(e) => {
-              setMessage(e.target.value), setShowEmojiPicker(false);
+              setMessage(e.target.value);
+              setShowEmojiPicker(false);
             }}
           />
         </form>

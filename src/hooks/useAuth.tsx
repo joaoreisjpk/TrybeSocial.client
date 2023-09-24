@@ -52,7 +52,6 @@ export function AuthProvider({ children }: IProvider) {
       setAuth(updatedUser);
       setTimeout(() => handleUpdateUserAuth(updatedUser), TEN_MIN);
     } catch (err) {
-      console.log(err);
       await logout();
     }
   }

@@ -12,7 +12,6 @@ export default function RoomLayout() {
   const username = 'João';
 
   useEffect(() => {
-    console.log('chat has loaded');
     if (roomUsers[roomId]?.includes(socket?.id)) return;
     socket?.emit('send_message', {
       text: `${username} joined the room.`,

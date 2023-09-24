@@ -17,7 +17,6 @@ export default function MainPage() {
     const response = userID
       ? await getUser(userID as string, auth?.accessToken)
       : {};
-    console.log(response);
     setUser(response);
   }
 
