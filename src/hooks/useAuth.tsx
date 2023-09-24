@@ -18,6 +18,7 @@ import {
 interface IContext {
   logout: () => Promise<void>;
   user: any;
+  auth: any;
   setUser: Dispatch<SetStateAction<string>>;
   // eslint-disable-next-line no-unused-vars
   handleUpdateUserAuth: (user: any) => void
@@ -33,6 +34,7 @@ const loginPaths = ['/login', '/signup'];
 
 export function AuthProvider({ children }: IProvider) {
   const [user, setUser] = useState<any>();
+  const [auth, setAuth] = useState<any>();
   const { pathname, push } = useRouter();
   const TEN_MIN = 1000 * 60 * 10;
 
@@ -47,6 +49,7 @@ export function AuthProvider({ children }: IProvider) {
       const { user: updatedUser } = await updateUserAuth(userParam || user);
       if (!updatedUser) throw new Error('Acces Denied');
       setUser(updatedUser);
+      setAuth(updatedUser);
       setTimeout(() => handleUpdateUserAuth(updatedUser), TEN_MIN);
     } catch (err) {
       console.log(err);
@@ -79,6 +82,7 @@ export function AuthProvider({ children }: IProvider) {
       value={{
         logout,
         user,
+        auth,
         setUser,
         handleUpdateUserAuth,
       }}

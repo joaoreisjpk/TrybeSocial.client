@@ -31,6 +31,7 @@ export default function Header() {
               <Link href='/jobs'>Vagas</Link>
               <Link href='/profile'>Perfil</Link>
               <Link href='/labs'>Laboratórios</Link>
+              <Link href='/chat'>Chat</Link>
               <MUIButton
                 bgColor='black'
                 sx={{ color: 'white', padding: '.4rem 1rem', marginLeft: '1rem' }}

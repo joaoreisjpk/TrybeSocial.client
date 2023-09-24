@@ -102,3 +102,20 @@ export async function createLab(body: ILab, token: string) {
     return {};
   }
 }
+
+export async function getUser(id: string, token: string) {
+  try {
+    const response = await fetch(`${URL}/user/${id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        token,
+      },
+    });
+    const normalize = await response.json();
+    return normalize;
+  } catch (err) {
+    console.log(err);
+    return {};
+  }
+}

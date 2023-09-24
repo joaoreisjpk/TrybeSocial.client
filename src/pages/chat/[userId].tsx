@@ -1,26 +1,13 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Head from 'next/head';
 import { Box } from '@mui/material';
-import SocketProvider, { useSocket } from '../../contexts/SocketContext';
+import SocketProvider from '../../contexts/SocketContext';
 import ChatBody from '../../components/Chat/ChatBody';
 import ChatFooter from '../../components/Chat/ChatFooter';
 import Header from '../../components/Header';
 
 export default function RoomLayout() {
   const roomId = '1';
-  const { socket, roomUsers } = useSocket();
-  const username = 'João';
-
-  useEffect(() => {
-    console.log('chat has loaded');
-    if (roomUsers[roomId]?.includes(socket?.id)) return;
-    socket?.emit('send_message', {
-      text: `${username} joined the room.`,
-      socketId: 'kurakani',
-      roomId,
-    });
-    socket?.emit('join_room', roomId);
-  }, []);
   return (
     <SocketProvider>
       <Head>

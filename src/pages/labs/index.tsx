@@ -14,21 +14,21 @@ import { useAuth } from '../../hooks/useAuth';
 export default function Labs() {
   const [labList, setLabList] = useState<ILab[]>([]);
   const [isCreateLabModalOpen, setIsCreateLabModalOpen] = useState(false);
-  const { user } = useAuth();
+  const { auth } = useAuth();
 
   async function getLabsList() {
-    setLabList(await listLabs(user?.accessToken));
+    setLabList(await listLabs(auth?.accessToken));
   }
 
   async function postNewLab(params: ILab) {
     setIsCreateLabModalOpen(false);
-    await createLab(params, user?.accessToken);
+    await createLab(params, auth?.accessToken);
     await getLabsList();
   }
 
   useEffect(() => {
     getLabsList();
-  }, [user]);
+  }, [auth]);
 
   const formFields = {
     globalProps: {
@@ -76,7 +76,7 @@ export default function Labs() {
     contactNumber: '',
   };
 
-  if (!user) return <div>Loading...</div>;
+  if (!auth) return <div>Loading...</div>;
 
   return (
     <div>
