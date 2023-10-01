@@ -1,9 +1,15 @@
+import { destroyCookie } from './cookie';
 import {
   IJob, ILab,
 } from './interfaces';
 
 const URL = process.env.NEXT_PUBLIC_URL || process.env.URL;
-
+const handleError = (error: any) => {
+  console.log(error);
+  if (error.message === 'access denied') {
+    destroyCookie('trybesocialUser');
+  }
+};
 export async function fetchLogin(body: string) {
   try {
     const response = await fetch(`${URL}/auth/signin`, {
@@ -15,8 +21,7 @@ export async function fetchLogin(body: string) {
     });
     return response.json();
   } catch (err) {
-    console.log(err);
-    return {};
+    return handleError(err);
   }
 }
 
@@ -30,8 +35,7 @@ export async function fetchSignUp(body: string) {
       body,
     }).then((data) => data.json());
   } catch (err) {
-    console.log(err);
-    return {};
+    return handleError(err);
   }
 }
 
@@ -46,8 +50,7 @@ export async function updateUserAuth({ accessToken, email }: any) {
     });
     return tokenResponse.json();
   } catch (err) {
-    console.log(err);
-    return {};
+    return handleError(err);
   }
 }
 
@@ -72,8 +75,7 @@ export async function createJob(body: IJob, token: string) {
       body: JSON.stringify(body),
     }).then((data) => data.json()));
   } catch (err) {
-    console.log(err);
-    return {};
+    return handleError(err);
   }
 }
 
@@ -98,8 +100,7 @@ export async function createLab(body: ILab, token: string) {
       body: JSON.stringify(body),
     }).then((data) => data.json()));
   } catch (err) {
-    console.log(err);
-    return {};
+    return handleError(err);
   }
 }
 
@@ -115,7 +116,23 @@ export async function getUser(id: string, token: string) {
     const normalize = await response.json();
     return normalize;
   } catch (err) {
-    console.log(err);
-    return {};
+    return handleError(err);
+  }
+}
+
+export async function listUsers(params: any, token: string) {
+  try {
+    const queryString = new URLSearchParams(params);
+    const response = await fetch(`${URL}/user/list?${queryString}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        token,
+      },
+    });
+    const normalize = await response.json();
+    return normalize;
+  } catch (err) {
+    return handleError(err);
   }
 }
